@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This xml to config avatar,... to sync preferences in setting of android -->
+<account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountType="com.dangchienhsgs.giffus"
+    android:icon="@drawable/ic_launcher"
+    android:smallIcon="@drawable/ic_launcher"
+    android:label="Giffus"/>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Giffus</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string-array name="nav_drawer_items">
+        <item>Home</item>
+        <item>Account</item>
+        <item>Sign out</item>
+    </string-array>
+
+    <string name="action_search">Search your friend</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="loading">Waiting for sync...</string>
+    <string name="title_activity_activity_setting">ActivitySetting</string>
+
+</resources>

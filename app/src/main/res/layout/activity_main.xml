@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MyActivity"
+    android:id="@+id/mainLayout">
+
+    <EditText
+        android:id="@+id/edit_username"
+        android:layout_width="300dp"
+        android:layout_marginLeft="30dp"
+        android:layout_height="55dp"
+        android:hint="Username"
+        android:layout_marginTop="42dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:inputType="text" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_marginLeft="30dp"
+        android:layout_height="55dp"
+        android:id="@+id/edit_password"
+        android:hint="Password"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/edit_username"
+        android:layout_centerHorizontal="true"
+        android:inputType="textPassword" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:onClick="onClickSignIn"
+        android:text="Sign In"
+        android:id="@+id/button_signIn"
+        android:layout_alignTop="@+id/button_register"
+        android:layout_alignLeft="@+id/edit_username"
+        android:layout_alignStart="@+id/edit_username" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Register "
+        android:onClick="onClickRegister"
+        android:id="@+id/button_register"
+        android:layout_gravity="right"
+        android:layout_below="@+id/edit_username"
+        android:layout_alignRight="@+id/edit_username"
+        android:layout_alignEnd="@+id/edit_username"
+        android:layout_marginTop="85dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/button_register"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>
