@@ -1,4 +1,4 @@
-package com.dangchienhsgs.giffus;
+package com.dangchienhsgs.giffus.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

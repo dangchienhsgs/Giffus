@@ -32,7 +32,7 @@ public class DataHelper {
                 contentValues.put(FriendContract.Entry.EMAIL, jsonObject.getString(FriendContract.Entry.EMAIL));
                 contentValues.put(FriendContract.Entry.MOBILE_PHONE, jsonObject.getString(FriendContract.Entry.MOBILE_PHONE));
                 contentValues.put(FriendContract.Entry.BIRTHDAY, jsonObject.getString(FriendContract.Entry.BIRTHDAY));
-                contentResolver.insert(FriendContract.FRIEND_CONTENT_URI, contentValues);
+                contentResolver.insert(FriendContract.URI, contentValues);
             }
             return true;
         } catch (JSONException e){

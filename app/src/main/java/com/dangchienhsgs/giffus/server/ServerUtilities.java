@@ -17,6 +17,8 @@ public class ServerUtilities {
     public static String REQUEST_USER="require_user";
     public static String REQUEST_USER_PASSWORD="require_password";
     public static String INVITED_USER="invited_user";
+
+    public static String NOT_FOUND="not_found";
     // Send data to server
     public static String postToServer(String endpoint, Map<String, String> params) {
         UrlBuilder urlBuilder=new UrlBuilder(endpoint);
@@ -32,12 +34,31 @@ public class ServerUtilities {
 
     }
 
+    public static String getUserInfoById(String user_id){
+        HashMap<String, String> hashMap=new HashMap<String, String>();
+        hashMap.put(Common.USER_ID, user_id);
+        hashMap.put(Common.ACTION, Common.ACTION_GET_USER_INFO_BY_ID);
+        String result=postToServer(SERVER_NAME, hashMap);
+        return result;
+    }
+
+
     public static String sendRequestFriend(String requestUser, String requestUserPassword, String invitedUser){
         HashMap<String, String> hashMap=new HashMap<String, String>();
         hashMap.put(REQUEST_USER, requestUser);
         hashMap.put(REQUEST_USER_PASSWORD, requestUserPassword);
         hashMap.put(INVITED_USER, invitedUser);
         hashMap.put(ACTION, ACTION_REQUEST_FRIENDSHIP);
+
+        String result=postToServer(SERVER_NAME, hashMap);
+        return result;
+    }
+
+    public static String getHumanInfoByAttribute(String attribute, String value){
+        HashMap<String, String> hashMap=new HashMap<String, String>();
+        hashMap.put(Common.ACTION, Common.ACTION_GET_USER_INFO_BY_ATT);
+        hashMap.put(Common.ATTRIBUTE, attribute);
+        hashMap.put(Common.VALUE, value);
 
         String result=postToServer(SERVER_NAME, hashMap);
         return result;

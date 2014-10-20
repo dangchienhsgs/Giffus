@@ -4,11 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.dangchienhsgs.giffus.HomeActivity" >
 
-    <item android:id="@+id/action_add_gift"
-        android:title="Send a gift"
+    <item android:id="@+id/action_add_friend"
+        android:title="Add Friends"
         app:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_add"/>
-
+    <item android:id="@+id/action_add_gift"
+        android:title="Add Gift"
+        app:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_input_add"/>
+        />
     <item android:id="@+id/action_search"
         android:title="Search Friends"
         app:showAsAction="ifRoom"

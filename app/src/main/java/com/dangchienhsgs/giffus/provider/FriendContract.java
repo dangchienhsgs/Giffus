@@ -8,12 +8,14 @@ import android.net.Uri;
 public class FriendContract {
     public static final String TABLE_NAME = "friends";
 
-    public static final Uri FRIEND_CONTENT_URI= Uri.parse("content://"+DataProvider.CONTENT_AUTHORITY+"/"+TABLE_NAME);
+    public static final Uri URI = Uri.parse("content://"+DataProvider.CONTENT_AUTHORITY+"/"+TABLE_NAME);
 
 
     public final static int ALREADY_FRIEND = 0;
     public final static int IS_REQUESTING = 1;
-    public final static int IN_ACCEPTING = 2;
+
+    // this friend wait we is waiting us to accept
+    public final static int WAIT_ACCEPTING = 2;
 
     public class Entry{
         public static final String _ID="_id";
@@ -26,7 +28,5 @@ public class FriendContract {
         public static final String GENRE="genre";
         public static final String BIRTHDAY="birthday";
         public static final String MOBILE_PHONE="mobile_phone";
-
-        public static final int COL_FULL_NAME_INDEX=4;
     }
 }

@@ -7,6 +7,8 @@
     <string name="title_activity_home">HomeActivity</string>
 
     <string-array name="nav_drawer_items">
+        <item>Notifications</item>
+        <item>Friend Requests</item>
         <item>Home</item>
         <item>Account</item>
         <item>Sign out</item>
@@ -16,5 +18,15 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="loading">Waiting for sync...</string>
     <string name="title_activity_activity_setting">ActivitySetting</string>
+    <string name="drawer_close_description">Close drawer</string>
+    <string name="drawer_open_description">Open drawer</string>
+    <string name="title_activity_notify">NotifyActivity</string>
+    <string name="title_activity_friend_requests">Friend Requests</string>
+    <string name="title_activity_search_friends">SearchFriends</string>
+    <string name="title_activity_sync_friends">Choose your friends to sync</string>
+    <string name="title_activity_search_by_name">SearchByNameActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_edit_cover">EditCover</string>
+    <string name="title_activity_create_cover">CreateCoverActivity</string>
 
 </resources>

@@ -1,17 +1,14 @@
 package com.dangchienhsgs.giffus;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -22,13 +19,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import com.dangchienhsgs.giffus.account.UserHandler;
+import com.dangchienhsgs.giffus.adapter.TabAdapter;
 import com.dangchienhsgs.giffus.provider.FriendContract;
+import com.dangchienhsgs.giffus.provider.GiftReceivedContract;
+import com.dangchienhsgs.giffus.provider.GiftSentContract;
+import com.dangchienhsgs.giffus.provider.NotificationContract;
 import com.dangchienhsgs.giffus.utils.Common;
 
 
 public class HomeActivity extends ActionBarActivity implements ActionBar.TabListener {
+    public static final String TAG="Home Activity";
     private ViewPager viewPager;
     private TabAdapter tabAdapter;
     private ActionBar actionBar;
@@ -36,8 +38,10 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
     // Attributes for DrawerLayout
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private String[] mDrawerTitle;
-    CharSequence mTitle;
+    private String[] mDrawerListTitle;
+    private CharSequence mDrawerTitle;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mTitle;
 
     private String username;
     private String password;
@@ -46,6 +50,31 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
     // Title of Tabs
     private String tabsName[] = {"Home", "Friend", "Library"};
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ListFragment listFragment=(ListFragment) tabAdapter.getItem(1);
+        SimpleCursorAdapter cursorAdapter=(SimpleCursorAdapter)listFragment.getListAdapter();
+        Log.d(TAG, "Dang onResume");
+        if (cursorAdapter!=null){
+            // We need update the friend list view in situation that
+            // friends can be add from other activity
+            // Update by update the cursor and notify the adapter
+            Log.d(TAG, "Update FRIEND ADAPTER");
+            // Get new cursor
+            Cursor cursor=getContentResolver().query(
+                    FriendContract.URI,
+                    null,
+                    FriendContract.Entry.RELATIONSHIP + "=" + FriendContract.ALREADY_FRIEND,
+                    null,
+                    null
+            );
+            // update cursor
+            cursorAdapter.swapCursor(cursor);
+            // notify the friend listview
+            cursorAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,22 +84,9 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
         createTabs();
         createNavigationDrawer();
 
-        ContentResolver contentResolver = getContentResolver();
-
-        Cursor cursor = contentResolver.query(FriendContract.FRIEND_CONTENT_URI, null, null, null, null);
-        if (!cursor.moveToFirst()) {
-            Toast.makeText(this, "Can not access", Toast.LENGTH_LONG).show();
-        } else {
-            String result = cursor.getString(cursor.getColumnIndex(FriendContract.Entry.USERNAME));
-            Toast.makeText(this, result, Toast.LENGTH_LONG).show();
-        }
-
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        username=preferences.getString(Common.USERNAME, "");
-        password=preferences.getString(Common.PASSWORD, "");
-        registrationId=preferences.getString(Common.REGISTRATION_ID, "");
-        Toast.makeText(getApplicationContext(), username+" "+password+" "+registrationId, Toast.LENGTH_LONG).show();
+        username = UserHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext());
+        password = UserHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext());
+        registrationId = UserHandler.getValueFromPreferences(Common.REGISTRATION_ID, getApplicationContext());
 
     }
 
@@ -117,11 +133,43 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
 
     // Create DrawerNavigation
     public void createNavigationDrawer() {
+
+        //getActionBar().setHomeButtonEnabled(true);
+
+        mDrawerTitle=mTitle=getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_drawer);
-        mDrawerTitle = getResources().getStringArray(R.array.nav_drawer_items);
 
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mDrawerTitle));
+        // create the button to open drawer layout
+        /*mDrawerToggle=new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                R.drawable.ic_drawer,
+                R.string.drawer_open_description,
+                R.string.drawer_close_description
+        ){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu();
+
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        //getActionBar().setHomeButtonEnabled(true);*/
+
+        mDrawerListTitle = getResources().getStringArray(R.array.nav_drawer_items);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mDrawerListTitle));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
 
@@ -130,19 +178,39 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
      * It point to subroutine selectItem (int position) where position is the
      * order of item we click
      */
+
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView adapterView, View view, int position, long l) {
+            Intent intent;
             switch (position) {
                 // Do action here
                 case 0:
+                    //Start Notify Activity
+                    intent=new Intent(getApplicationContext(), NotifyActivity.class);
+                    startActivity(intent);
                     break;
                 case 1:
+                    // Start friend Request Activity
+                    intent=new Intent(getApplicationContext(), FriendRequestsActivity.class);
+                    startActivity(intent);
                     break;
                 case 2:
                     //Intent intent=new Intent(getApplicationContext(), SettingsActivity.class);
                     //startActivity(intent);
                     break;
+                case Common.DRAWER_SIGN_OUT_ID:
+                    ContentResolver contentResolver=getContentResolver();
+                    contentResolver.delete(FriendContract.URI,null,null);
+                    contentResolver.delete(GiftSentContract.URI,null,null);
+                    contentResolver.delete(GiftReceivedContract.URI,null,null);
+                    contentResolver.delete(NotificationContract.URI,null,null);
+                    UserHandler.deleteFromPreferences(Common.USERNAME, getApplicationContext());
+                    UserHandler.deleteFromPreferences(Common.PASSWORD, getApplicationContext());
+                    intent=new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    finish();
             }
         }
 
@@ -182,8 +250,13 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_add_friend:
+                Intent intent=new Intent(getApplicationContext(), SearchFriendsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_add_gift:
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -202,6 +275,10 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+    }
+
+    public void onClickAddFriend(View view){
 
     }
 }

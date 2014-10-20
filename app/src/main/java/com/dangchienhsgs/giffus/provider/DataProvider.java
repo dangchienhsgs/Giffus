@@ -22,7 +22,7 @@ import com.dangchienhsgs.giffus.utils.SelectionBuilder;
 public class DataProvider extends ContentProvider {
     private String TAG = "DataProvider";
 
-    public static final String CONTENT_AUTHORITY="com.dangchienhsgs.giffus.provider";
+    public static final String CONTENT_AUTHORITY = "com.dangchienhsgs.giffus.provider";
 
     // Define CODE DETERMINE OF TABLE
     public static final int TABLE_FRIEND_ALL_ROWS = 0;
@@ -31,6 +31,8 @@ public class DataProvider extends ContentProvider {
     public static final int TABLE_GIFT_SENT_SINGLE_ROW = 3;
     public static final int TABLE_GIFT_RECEIVER_ALL_ROWS = 4;
     public static final int TABLE_GIFT_RECEIVER_SINGLE_ROW = 5;
+    public static final int TABLE_NOTIFICATION_ALL_ROW = 6;
+    public static final int TABLE_NOTIFICATION_SINGLE_ROW = 7;
 
     public static final UriMatcher uriMatcher;
 
@@ -57,6 +59,9 @@ public class DataProvider extends ContentProvider {
 
         uriMatcher.addURI(CONTENT_AUTHORITY, GiftReceivedContract.TABLE_NAME, TABLE_GIFT_RECEIVER_ALL_ROWS);
         uriMatcher.addURI(CONTENT_AUTHORITY, GiftReceivedContract.TABLE_NAME + "/#", TABLE_GIFT_RECEIVER_SINGLE_ROW);
+
+        uriMatcher.addURI(CONTENT_AUTHORITY, NotificationContract.TABLE_NAME, TABLE_NOTIFICATION_ALL_ROW);
+        uriMatcher.addURI(CONTENT_AUTHORITY, NotificationContract.TABLE_NAME + "/#", TABLE_NOTIFICATION_SINGLE_ROW);
     }
 
     private DBHelper dbHelper;
@@ -65,8 +70,8 @@ public class DataProvider extends ContentProvider {
     public boolean onCreate() {
         dbHelper = new DBHelper(getContext());
 
-        SQLiteDatabase database=dbHelper.getWritableDatabase();
-        if (database!=null){
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        if (database != null) {
             return true;
         } else {
             return false;
@@ -114,6 +119,13 @@ public class DataProvider extends ContentProvider {
                 queryBuilder.setTables(GiftReceivedContract.TABLE_NAME);
                 queryBuilder.appendWhere("_id = " + uri.getLastPathSegment());
                 break;
+            case TABLE_NOTIFICATION_ALL_ROW:
+                queryBuilder.setTables(NotificationContract.TABLE_NAME);
+                break;
+            case TABLE_NOTIFICATION_SINGLE_ROW:
+                queryBuilder.appendWhere("_id = " + uri.getLastPathSegment());
+                break;
+
             default:
                 throw new IllegalArgumentException("Unsupport URI: " + uri);
         }
@@ -152,6 +164,9 @@ public class DataProvider extends ContentProvider {
             case TABLE_GIFT_RECEIVER_ALL_ROWS:
                 id = database.insertOrThrow(GiftReceivedContract.TABLE_NAME, null, contentValues);
                 break;
+            case TABLE_NOTIFICATION_ALL_ROW:
+                id = database.insertOrThrow(NotificationContract.TABLE_NAME, null, contentValues);
+                break;
 
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -164,50 +179,61 @@ public class DataProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selections) {
-        SelectionBuilder selectionBuilder=new SelectionBuilder();
-        final SQLiteDatabase db=dbHelper.getWritableDatabase();
-        final int match=uriMatcher.match(uri);
+        SelectionBuilder selectionBuilder = new SelectionBuilder();
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
         int count;
 
-        switch (match){
+        switch (match) {
             case TABLE_FRIEND_ALL_ROWS:
-                count=selectionBuilder.table(FriendContract.TABLE_NAME)
+                count = selectionBuilder.table(FriendContract.TABLE_NAME)
                         .where(selection, selections)
                         .delete(db);
                 break;
             case TABLE_FRIEND_SINGLE_ROW:
-                count=selectionBuilder.table(FriendContract.TABLE_NAME)
-                        .where(FriendContract.Entry._ID+"=?", uri.getLastPathSegment())
+                count = selectionBuilder.table(FriendContract.TABLE_NAME)
+                        .where(FriendContract.Entry._ID + "=?", uri.getLastPathSegment())
                         .where(selection, selections)
                         .delete(db);
                 break;
             case TABLE_GIFT_RECEIVER_ALL_ROWS:
-                count=selectionBuilder.table(GiftReceivedContract.TABLE_NAME)
+                count = selectionBuilder.table(GiftReceivedContract.TABLE_NAME)
                         .where(selection, selections)
                         .delete(db);
                 break;
             case TABLE_GIFT_RECEIVER_SINGLE_ROW:
-                count=selectionBuilder.table(GiftReceivedContract.TABLE_NAME)
-                        .where(FriendContract.Entry._ID+"=?", uri.getLastPathSegment())
+                count = selectionBuilder.table(GiftReceivedContract.TABLE_NAME)
+                        .where(FriendContract.Entry._ID + "=?", uri.getLastPathSegment())
                         .where(selection, selections)
                         .delete(db);
                 break;
             case TABLE_GIFT_SENT_ALL_ROWS:
-                count=selectionBuilder.table(GiftSentContract.TABLE_NAME)
+                count = selectionBuilder.table(GiftSentContract.TABLE_NAME)
                         .where(selection, selections)
                         .delete(db);
                 break;
             case TABLE_GIFT_SENT_SINGLE_ROW:
-                count=selectionBuilder.table(GiftSentContract.TABLE_NAME)
-                        .where(FriendContract.Entry._ID+"=?", uri.getLastPathSegment())
+                count = selectionBuilder.table(GiftSentContract.TABLE_NAME)
+                        .where(FriendContract.Entry._ID + "=?", uri.getLastPathSegment())
+                        .where(selection, selections)
+                        .delete(db);
+                break;
+            case TABLE_NOTIFICATION_ALL_ROW:
+                count = selectionBuilder.table(NotificationContract.TABLE_NAME)
+                        .where(selection, selections)
+                        .delete(db);
+                break;
+            case TABLE_NOTIFICATION_SINGLE_ROW:
+                count = selectionBuilder.table(NotificationContract.TABLE_NAME)
+                        .where(NotificationContract.Entry._ID + "=?", uri.getLastPathSegment())
                         .where(selection, selections)
                         .delete(db);
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown uri: "+uri);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        Context context=getContext();
+        Context context = getContext();
         context.getContentResolver().notifyChange(uri, null, false);
         return count;
     }
@@ -215,49 +241,60 @@ public class DataProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selections) {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        final int match=uriMatcher.match(uri);
-        SelectionBuilder builder=new SelectionBuilder();
+        final int match = uriMatcher.match(uri);
+        SelectionBuilder builder = new SelectionBuilder();
 
         int count;
         switch (match) {
             case TABLE_FRIEND_ALL_ROWS:
-                count=builder.table(FriendContract.TABLE_NAME)
+                count = builder.table(FriendContract.TABLE_NAME)
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
             case TABLE_FRIEND_SINGLE_ROW:
-                count=builder.table(FriendContract.TABLE_NAME)
-                        .where(FriendContract.Entry._ID+"=?", uri.getLastPathSegment())
+                count = builder.table(FriendContract.TABLE_NAME)
+                        .where(FriendContract.Entry._ID + "=?", uri.getLastPathSegment())
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
             case TABLE_GIFT_SENT_ALL_ROWS:
-                count=builder.table(GiftSentContract.TABLE_NAME)
+                count = builder.table(GiftSentContract.TABLE_NAME)
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
             case TABLE_GIFT_SENT_SINGLE_ROW:
-                count=builder.table(GiftSentContract.TABLE_NAME)
-                        .where(GiftSentContract.Entry._ID+"=?", uri.getLastPathSegment())
+                count = builder.table(GiftSentContract.TABLE_NAME)
+                        .where(GiftSentContract.Entry._ID + "=?", uri.getLastPathSegment())
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
             case TABLE_GIFT_RECEIVER_ALL_ROWS:
-                count=builder.table(GiftReceivedContract.TABLE_NAME)
+                count = builder.table(GiftReceivedContract.TABLE_NAME)
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
             case TABLE_GIFT_RECEIVER_SINGLE_ROW:
-                count=builder.table(GiftReceivedContract.TABLE_NAME)
-                        .where(GiftReceivedContract.Entry._ID+"=?", uri.getLastPathSegment())
+                count = builder.table(GiftReceivedContract.TABLE_NAME)
+                        .where(GiftReceivedContract.Entry._ID + "=?", uri.getLastPathSegment())
+                        .where(selection, selections)
+                        .update(database, contentValues);
+                break;
+            case TABLE_NOTIFICATION_ALL_ROW:
+                count = builder.table(NotificationContract.TABLE_NAME)
+                        .where(selection, selections)
+                        .update(database, contentValues);
+                break;
+            case TABLE_NOTIFICATION_SINGLE_ROW:
+                count = builder.table(NotificationContract.TABLE_NAME)
+                        .where(NotificationContract.Entry._ID + "=?", uri.getLastPathSegment())
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown uri: "+uri);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        Context context=getContext();
+        Context context = getContext();
         context.getContentResolver().notifyChange(uri, null, false);
         return count;
     }
@@ -274,7 +311,7 @@ public class DataProvider extends ContentProvider {
             // create table friends
             db.execSQL("create table " + FriendContract.TABLE_NAME + " ("
                     + FriendContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
-                    + FriendContract.Entry.USERNAME+ TYPE_TEXT+ COMMA_SEP
+                    + FriendContract.Entry.USERNAME + TYPE_TEXT + COMMA_SEP
                     + FriendContract.Entry.USER_ID + TYPE_TEXT + COMMA_SEP
                     + FriendContract.Entry.EMAIL + TYPE_TEXT + COMMA_SEP
                     + FriendContract.Entry.FULL_NAME + TYPE_TEXT + COMMA_SEP
@@ -288,23 +325,30 @@ public class DataProvider extends ContentProvider {
             // create table gift receiver
             db.execSQL("create table " + GiftSentContract.TABLE_NAME + " ("
                     + GiftSentContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
-                    + GiftSentContract.Entry.GIFT_ID+TYPE_TEXT+COMMA_SEP
-                    + GiftSentContract.Entry.MESSAGE + TYPE_TEXT+COMMA_SEP
-                    + GiftSentContract.Entry.RECEIVER_ID + TYPE_TEXT+COMMA_SEP
-                    + GiftSentContract.Entry.DATETIME + TYPE_TEXT+COMMA_SEP
-                    + GiftSentContract.Entry.LOCATION + TYPE_TEXT+COMMA_SEP
+                    + GiftSentContract.Entry.GIFT_ID + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.MESSAGE + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.RECEIVER_ID + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.DATETIME + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.LOCATION + TYPE_TEXT + COMMA_SEP
                     + GiftSentContract.Entry.IS_FINISHED + TYPE_INT
-                    +");");
+                    + ");");
             // create table gift sent
             db.execSQL("create table " + GiftReceivedContract.TABLE_NAME + " ("
                     + GiftReceivedContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
-                    + GiftReceivedContract.Entry.GIFT_ID+TYPE_TEXT+COMMA_SEP
-                    + GiftReceivedContract.Entry.SENDER_ID + TYPE_TEXT+COMMA_SEP
-                    + GiftReceivedContract.Entry.DATETIME + TYPE_TEXT+COMMA_SEP
-                    + GiftReceivedContract.Entry.MESSAGE + TYPE_TEXT+COMMA_SEP
-                    + GiftReceivedContract.Entry.LOCATION+TYPE_TEXT+COMMA_SEP
-                    + GiftReceivedContract.Entry.IS_FINISHED+TYPE_INT+
+                    + GiftReceivedContract.Entry.GIFT_ID + TYPE_TEXT + COMMA_SEP
+                    + GiftReceivedContract.Entry.SENDER_ID + TYPE_TEXT + COMMA_SEP
+                    + GiftReceivedContract.Entry.DATETIME + TYPE_TEXT + COMMA_SEP
+                    + GiftReceivedContract.Entry.MESSAGE + TYPE_TEXT + COMMA_SEP
+                    + GiftReceivedContract.Entry.LOCATION + TYPE_TEXT + COMMA_SEP
+                    + GiftReceivedContract.Entry.IS_FINISHED + TYPE_INT +
                     ");");
+            db.execSQL("create table " + NotificationContract.TABLE_NAME + " ("
+                    + NotificationContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
+                    + NotificationContract.Entry.FRIEND_ID + TYPE_TEXT + COMMA_SEP
+                    + NotificationContract.Entry.ENABLE + TYPE_INT + COMMA_SEP
+                    + NotificationContract.Entry.MESSAGE + TYPE_TEXT + COMMA_SEP
+                    + NotificationContract.Entry.TYPE + TYPE_TEXT
+                    + ");");
         }
 
         private DBHelper(Context context) {

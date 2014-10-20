@@ -5,12 +5,13 @@
     <permission
         android:name="com.dangchienhsgs.giffus.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="com.dangchienhsgs.giffus.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
@@ -38,6 +39,7 @@
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.dangchienhsgs.giffus" />
             </intent-filter>
         </receiver>
@@ -48,23 +50,46 @@
             android:exported="false" >
         </provider>
 
-        <service android:name=".GcmIntentService"/>
+        <service android:name=".GcmIntentService" />
 
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
+        <activity
+            android:name=".FriendRequestsActivity"
+            android:label="@string/title_activity_friend_requests" >
+        </activity>
+        <activity
+            android:name=".NotifyActivity"
+            android:label="@string/title_activity_notify" >
+        </activity>
+        <activity
+            android:name=".SearchFriendsActivity"
+            android:label="@string/title_activity_search_friends" >
+        </activity>
+        <activity
+            android:name=".SyncFriendsActivity"
+            android:label="@string/title_activity_sync_friends" >
+        </activity>
+        <activity
+            android:name=".SearchByNameActivity"
+            android:label="@string/title_activity_search_by_name" >
+        </activity>
 
-        <!--<service android:name=".account.AuthenticatorService" >
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
+        <service
+            android:name=".service.UpdateFriendService"
+            android:exported="false" >
+        </service>
 
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service> -->
-
+        <activity
+            android:name=".postcard.EditCover"
+            android:label="@string/title_activity_edit_cover" >
+        </activity>
+        <activity
+            android:name=".postcard.CreateCoverActivity"
+            android:label="@string/title_activity_create_cover" >
+        </activity>
     </application>
 
 </manifest>

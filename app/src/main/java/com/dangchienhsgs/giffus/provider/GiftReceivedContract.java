@@ -8,7 +8,7 @@ import android.net.Uri;
 public class GiftReceivedContract {
     public static final String TABLE_NAME = "gift_receiver";
 
-    public static final Uri GIF_RECEIVED_CONTENT_URI= Uri.parse("content://"+DataProvider.CONTENT_AUTHORITY+"/"+TABLE_NAME);
+    public static final Uri URI = Uri.parse("content://"+DataProvider.CONTENT_AUTHORITY+"/"+TABLE_NAME);
 
     public class Entry{
         public static final String _ID="_id";

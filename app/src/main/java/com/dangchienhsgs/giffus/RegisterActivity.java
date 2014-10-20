@@ -81,7 +81,7 @@ public class RegisterActivity extends ActionBarActivity {
             Map<String, String> data=new HashMap<String, String>();
             data.put(Common.USERNAME, username);
             data.put(Common.PASSWORD, password);
-            data.put(Common.PHONE_NUMBER, phoneNumber);
+            data.put(Common.MOBILE_PHONE, phoneNumber);
             data.put(Common.EMAIL, email);
             data.put(Common.FULL_NAME, fullname);
             data.put(Common.USER_ID, user_id);
@@ -122,7 +122,7 @@ public class RegisterActivity extends ActionBarActivity {
             editor.putString(Common.USERNAME, username);
             editor.putString(Common.PASSWORD, password);
             editor.putString(Common.FULL_NAME, fullname);
-            editor.putString(Common.PHONE_NUMBER, phoneNumber);
+            editor.putString(Common.MOBILE_PHONE, phoneNumber);
             editor.commit();
 
             startActivity(intent);

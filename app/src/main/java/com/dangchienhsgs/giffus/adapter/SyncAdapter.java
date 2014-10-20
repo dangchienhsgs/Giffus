@@ -1,4 +1,4 @@
-package com.dangchienhsgs.giffus;
+package com.dangchienhsgs.giffus.adapter;
 
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;

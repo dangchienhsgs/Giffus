@@ -1,5 +1,6 @@
 package com.dangchienhsgs.giffus;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.dangchienhsgs.giffus.account.UserHandler;
 import com.dangchienhsgs.giffus.provider.DataHelper;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
@@ -23,16 +25,12 @@ import com.dangchienhsgs.giffus.utils.URLContentHandler;
 import com.dangchienhsgs.giffus.utils.UrlBuilder;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.HashMap;
 
 
 public class MainActivity extends ActionBarActivity {
-    private String TAG="Main Activity";
+    private String TAG = "Main Activity";
 
     private ProgressBar progressBar;
     private EditText edit_username;
@@ -44,7 +42,6 @@ public class MainActivity extends ActionBarActivity {
     private String password;
 
 
-    private String jsonUser;
     private SharedPreferences prefs;
 
     @Override
@@ -60,13 +57,13 @@ public class MainActivity extends ActionBarActivity {
         button_signIn = (Button) findViewById(R.id.button_signIn);
         button_register = (Button) findViewById(R.id.button_register);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String username = prefs.getString(Common.USERNAME, "");
-        String password = prefs.getString(Common.PASSWORD, "");
+        String username = UserHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext());
+        String password = UserHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext());
 
-        if (!username.isEmpty() && !password.isEmpty()){
-            Intent intent=new Intent(getApplicationContext(), HomeActivity.class);
+        if (!username.isEmpty() && !password.isEmpty()) {
+            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -93,13 +90,12 @@ public class MainActivity extends ActionBarActivity {
      * If it match, continue to create a URLContent Download Task to download the resposne
      */
     private class SignInTask extends AsyncTask<String, Void, String> {
+        private Activity activity;
         private ProgressBar progressBar;
-        private Context context;
         private String result_signIn;
 
-        public SignInTask(Context context, ProgressBar progressBar) {
-
-            this.context = context;
+        public SignInTask(Activity activity, ProgressBar progressBar) {
+            this.activity=activity;
             this.progressBar = progressBar;
 
         }
@@ -116,18 +112,16 @@ public class MainActivity extends ActionBarActivity {
                 // Successful sign in
                 // Save username and password to preferences
                 Log.d(TAG, "Sign in is successful");
-                SharedPreferences.Editor editor=prefs.edit();
-                editor.putString(Common.USERNAME, username);
-                editor.putString(Common.PASSWORD, password);
-                editor.commit();
+                UserHandler.saveValueToPreferences(Common.USERNAME, username, getApplicationContext());
+                UserHandler.saveValueToPreferences(Common.PASSWORD, password, getApplicationContext());
                 // Down Load user info
-                new DownloadUserInfo(context, username, password).execute();
+                new DownloadUserInfo(activity, username, password).execute();
 
             } else {
                 // Sign in not successful
                 Log.d(TAG, "Sign in not successful");
                 progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(context, "Invalid username or password, please try again",
+                Toast.makeText(activity, "Invalid username or password, please try again",
                         Toast.LENGTH_SHORT).show();
             }
 
@@ -136,12 +130,12 @@ public class MainActivity extends ActionBarActivity {
 
     private class RegisterIDTask extends AsyncTask<Void, Void, String> {
         private GoogleCloudMessaging gcm;
-        private Context context;
+        private Activity activity;
         private static final int BACKOFF_MILLI_SECONDS = 2000;
         private static final int MAX_ATTEMPTS = 5;
 
-        private RegisterIDTask(Context context) {
-            this.context = context;
+        private RegisterIDTask(Activity activity) {
+            this.activity = activity;
             gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
         }
 
@@ -151,11 +145,11 @@ public class MainActivity extends ActionBarActivity {
             long backoff = BACKOFF_MILLI_SECONDS;
             for (int i = 0; i < MAX_ATTEMPTS; i++) {
                 if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(context);
+                    gcm = GoogleCloudMessaging.getInstance(activity);
                 }
                 try {
                     String regID = gcm.register(Common.getSenderId());
-                    Log.d(TAG, "Registration IDegID is "+regID);
+                    Log.d(TAG, "Registration IDegID is " + regID);
                     return regID;
                 } catch (IOException e) {
                     Log.d(TAG, "Registration Google Cloud Messaging was fail");
@@ -178,23 +172,22 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(String regID) {
             if (regID != null) {
                 Log.d(TAG, "Registration is successful, continue to update id to server");
-                new UpdateRegistrationId(context, regID).execute();
+                new UpdateRegistrationId(activity, regID).execute();
             }
         }
     }
 
     /**
      * Update registration_id to Server
-     *
      */
 
-    private class UpdateRegistrationId extends AsyncTask<Void, Void, String>{
+    private class UpdateRegistrationId extends AsyncTask<Void, Void, String> {
         private String registrationID;
-        private Context context;
+        private Activity activity;
 
-        public UpdateRegistrationId(Context context, String registrationID) {
-            this.context=context;
-            this.registrationID=registrationID;
+        public UpdateRegistrationId(Activity activity, String registrationID) {
+            this.activity = activity;
+            this.registrationID = registrationID;
         }
 
         @Override
@@ -209,45 +202,43 @@ public class MainActivity extends ActionBarActivity {
             params.put(Common.VALUE, registrationID);
 
             String result = ServerUtilities.postToServer(Common.SERVER_LINK, params);
-            Log.d(TAG, "Server sent: "+result);
+            Log.d(TAG, "Server sent: " + result);
             return result;
         }
 
         @Override
         protected void onPostExecute(String s) {
             // Update registration id to client
-            Log.d(TAG, "Save registration ID to preferences: "+Common.REGISTRATION_ID+": "+registrationID);
-            SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(context);
-            SharedPreferences.Editor editor=preferences.edit();
-            editor.putString(Common.REGISTRATION_ID, registrationID);
-            editor.commit();
+            Log.d(TAG, "Save registration ID to preferences: " + Common.REGISTRATION_ID + ": " + registrationID);
+            UserHandler.saveValueToPreferences(Common.REGISTRATION_ID, registrationID, getApplicationContext());
 
             // Start Home Activity
             Log.d(TAG, "Start sync data friends ");
-            new DownloadUserData(getApplicationContext()).execute();
+            new DownloadUserData(activity).execute();
         }
     }
 
     /**
      * Download user data before go to Home Activity
      */
-    private class DownloadUserData extends AsyncTask<Void, Void, Void>{
-        private Context context;
+    private class DownloadUserData extends AsyncTask<Void, Void, Void> {
+        private Activity activity;
 
-        private DownloadUserData(Context context) {
-            this.context = context;
+        private DownloadUserData(Activity activity) {
+
+            this.activity = activity;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            HashMap<String, String> hashMap=new HashMap<String, String>();
+            HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put(Common.USERNAME, username);
             hashMap.put(Common.PASSWORD, password);
             hashMap.put(Common.ACTION, Common.ACTION_GET_ALL_FRIENDS_INFO);
-            String friends=ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, hashMap);
-            Log.d(TAG, "Friends data: "+friends);
+            String friends = ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, hashMap);
+            Log.d(TAG, "Friends data: " + friends);
             Log.d(TAG, "Is Updating friends");
-            boolean result=new DataHelper(getContentResolver()).updateAllFriendsData(friends);
+            boolean result = new DataHelper(getContentResolver()).updateAllFriendsData(friends);
             return null;
         }
 
@@ -255,44 +246,47 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Log.d(TAG, "Start Home Activity");
-            Intent intent=new Intent(context, HomeActivity.class);
+            Intent intent = new Intent(activity, HomeActivity.class);
             startActivity(intent);
+            activity.finish();
         }
     }
 
     /* Download response from server and start Home Activity
      */
     private class DownloadUserInfo extends AsyncTask<Void, Void, String> {
-        private Context context;
+        private Activity activity;
         private String username;
         private String password;
 
-        private DownloadUserInfo(Context context, String username, String password) {
-            this.context = context;
-            this.username=username;
-            this.password=password;
+        private DownloadUserInfo(Activity activity, String username, String password) {
+            this.activity = activity;
+            this.username = username;
+            this.password = password;
         }
 
         @Override
 
         protected String doInBackground(Void... strings) {
-            String url = new UrlBuilder(Common.SERVER_LINK).append(Common.ACTION, Common.ACTION_GET_INFO)
-                    .append(Common.USERNAME, username).append(Common.PASSWORD, password).toString();
-            String result=new URLContentHandler().getURLFirstLine(url);
-            Log.d(TAG, "Successful get user Info: "+result);
-            return result ;
+            HashMap<String, String> hashMap=new HashMap<String, String>();
+            hashMap.put(Common.USERNAME, username);
+            hashMap.put(Common.PASSWORD, password);
+            hashMap.put(Common.ACTION, Common.ACTION_GET_INFO_BY_USERNAME);
+            String result = ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, hashMap);
+            Log.d(TAG, "Successful get user Info: " + result);
+            return result;
         }
 
         @Override
         protected void onPostExecute(String result) {
             // Update to Preferences;
-            SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(context);
-            SharedPreferences.Editor editor=preferences.edit();
-            editor.putString(Common.JSON_USER_INFO, result);
-            editor.commit();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+            Log.d(TAG, "Save user's information to preferences");
+            UserHandler.savedUserInfoToPreferences(preferences, result);
 
+            Log.d(TAG, "Test "+preferences.getString(Common.USER_ID, ""));
             // Start to registration ID to server
-            new RegisterIDTask(context).execute();
+            new RegisterIDTask(activity).execute();
 
         }
     }
@@ -315,6 +309,7 @@ public class MainActivity extends ActionBarActivity {
     public void onClickRegister(View view) {
         Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
         startActivity(intent);
+        finish();
     }
 
 
