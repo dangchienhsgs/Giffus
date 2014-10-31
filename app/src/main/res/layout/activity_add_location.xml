@@ -16,5 +16,4 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/edit_text_auto_complete" />
 
-
 </RelativeLayout>

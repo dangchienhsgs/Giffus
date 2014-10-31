@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class AddLocationActivity extends Activity implements AdapterView.OnItemClickListener,
         GoogleMap.OnMarkerClickListener {
@@ -38,7 +41,7 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
 
     private GoogleMap googleMap;
 
-
+    private Marker markerOptions;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +69,31 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
                     .getMap();
 
             googleMap.setOnMarkerClickListener(this);
+
+            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(final Marker marker) {
+                    View view = getLayoutInflater().inflate(R.layout.layout_info_window_google_map, null);
+
+                    TextView placeTitle = (TextView) view.findViewById(R.id.location_title);
+                    placeTitle.setText(marker.getTitle());
+
+                    Button button = (Button) view.findViewById(R.id.accept_button);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            markerOptions = marker;
+                        }
+                    });
+
+                    return view;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    return null;
+                }
+            });
 
             if (googleMap == null) {
                 Toast.makeText(this, "Unnable to create Map", Toast.LENGTH_SHORT).show();
@@ -101,18 +129,11 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
-        googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                return null;
-            }
-        });
+        if (marker.isInfoWindowShown()) {
+            marker.hideInfoWindow();
+        } else {
+            marker.showInfoWindow();
+        }
         return true;
     }
 
