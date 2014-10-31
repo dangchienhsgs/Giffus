@@ -10,20 +10,20 @@ import org.json.JSONObject;
 
 
 public class DataHelper {
-    private static final String TAG="Data Helper";
+    private static final String TAG = "Data Helper";
     private ContentResolver contentResolver;
 
     public DataHelper(ContentResolver contentResolver) {
         this.contentResolver = contentResolver;
     }
 
-    public boolean updateAllFriendsData(String friends){
-        try{
-            JSONArray jsonArray=new JSONArray(friends);
-            int length=jsonArray.length();
-            for (int i=0; i<length; i++){
-                JSONObject jsonObject=jsonArray.getJSONObject(i);
-                ContentValues contentValues=new ContentValues();
+    public boolean updateAllFriendsData(String friends) {
+        try {
+            JSONArray jsonArray = new JSONArray(friends);
+            int length = jsonArray.length();
+            for (int i = 0; i < length; i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                ContentValues contentValues = new ContentValues();
                 contentValues.put(FriendContract.Entry.USERNAME, jsonObject.getString(FriendContract.Entry.USERNAME));
                 contentValues.put(FriendContract.Entry.USER_ID, jsonObject.getString(FriendContract.Entry.USER_ID));
                 contentValues.put(FriendContract.Entry.FULL_NAME, jsonObject.getString(FriendContract.Entry.FULL_NAME));
@@ -32,10 +32,13 @@ public class DataHelper {
                 contentValues.put(FriendContract.Entry.EMAIL, jsonObject.getString(FriendContract.Entry.EMAIL));
                 contentValues.put(FriendContract.Entry.MOBILE_PHONE, jsonObject.getString(FriendContract.Entry.MOBILE_PHONE));
                 contentValues.put(FriendContract.Entry.BIRTHDAY, jsonObject.getString(FriendContract.Entry.BIRTHDAY));
+                contentValues.put(FriendContract.Entry.RELATIONSHIP, FriendContract.ALREADY_FRIEND);
+
+                Log.d(TAG, "Insert " + contentValues.toString());
                 contentResolver.insert(FriendContract.URI, contentValues);
             }
             return true;
-        } catch (JSONException e){
+        } catch (JSONException e) {
             Log.d(TAG, "JSONArray Parse is fail");
             return false;
         }

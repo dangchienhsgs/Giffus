@@ -20,10 +20,7 @@ import com.dangchienhsgs.giffus.utils.SelectionBuilder;
  * data can be SQL, XML, JSON or anything you want
  */
 public class DataProvider extends ContentProvider {
-    private String TAG = "DataProvider";
-
     public static final String CONTENT_AUTHORITY = "com.dangchienhsgs.giffus.provider";
-
     // Define CODE DETERMINE OF TABLE
     public static final int TABLE_FRIEND_ALL_ROWS = 0;
     public static final int TABLE_FRIEND_SINGLE_ROW = 1;
@@ -33,7 +30,6 @@ public class DataProvider extends ContentProvider {
     public static final int TABLE_GIFT_RECEIVER_SINGLE_ROW = 5;
     public static final int TABLE_NOTIFICATION_ALL_ROW = 6;
     public static final int TABLE_NOTIFICATION_SINGLE_ROW = 7;
-
     public static final UriMatcher uriMatcher;
 
     /**
@@ -64,6 +60,7 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI(CONTENT_AUTHORITY, NotificationContract.TABLE_NAME + "/#", TABLE_NOTIFICATION_SINGLE_ROW);
     }
 
+    private String TAG = "DataProvider";
     private DBHelper dbHelper;
 
     @Override
@@ -306,6 +303,10 @@ public class DataProvider extends ContentProvider {
         private static final String TYPE_INT = " INTEGER";
         private static final String COMMA_SEP = ",";
 
+        private DBHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+
         @Override
         public void onCreate(SQLiteDatabase db) {
             // create table friends
@@ -326,11 +327,35 @@ public class DataProvider extends ContentProvider {
             db.execSQL("create table " + GiftSentContract.TABLE_NAME + " ("
                     + GiftSentContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
                     + GiftSentContract.Entry.GIFT_ID + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.MESSAGE + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.RECEIVER_ID + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.DATETIME + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.LOCATION + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.IS_FINISHED + TYPE_INT
+
+                    + GiftSentContract.Entry.COVER_BACKGROUND_ID + TYPE_INT + COMMA_SEP
+
+                    + GiftSentContract.Entry.COVER_COLOR_LARGE_TEXT + TYPE_INT + COMMA_SEP
+                    + GiftSentContract.Entry.COVER_LARGE_TEXT_FONT + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.COVER_LARGE_TEXT + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.COVER_SIZE_LARGE_TEXT + TYPE_INT + COMMA_SEP
+
+                    + GiftSentContract.Entry.COVER_SMALL_TEXT + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.COVER_SMALL_TEXT_FONT + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.COVER_COLOR_SMALL_TEXT + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.COVER_SIZE_SMALL_TEXT + TYPE_TEXT + COMMA_SEP
+
+                    + GiftSentContract.Entry.INNER_AVATAR_ID + TYPE_INT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_BACKGROUND_ID + TYPE_INT + COMMA_SEP
+
+                    + GiftSentContract.Entry.INNER_COLOR_LARGE_TEXT + TYPE_INT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_LARGE_TEXT + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_SIZE_LARGE_TEXT + TYPE_INT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_LARGE_TEXT_FONT + TYPE_TEXT + COMMA_SEP
+
+                    + GiftSentContract.Entry.INNER_SMALL_TEXT + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_SMALL_TEXT_FONT + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_COLOR_SMALL_TEXT + TYPE_INT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_SIZE_SMALL_TEXT + TYPE_INT + COMMA_SEP
+
+                    + GiftSentContract.Entry.INNER_SONG_LYRICS + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_SONG_TITLE + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_SONG_URLS + TYPE_TEXT + COMMA_SEP
                     + ");");
             // create table gift sent
             db.execSQL("create table " + GiftReceivedContract.TABLE_NAME + " ("
@@ -342,6 +367,8 @@ public class DataProvider extends ContentProvider {
                     + GiftReceivedContract.Entry.LOCATION + TYPE_TEXT + COMMA_SEP
                     + GiftReceivedContract.Entry.IS_FINISHED + TYPE_INT +
                     ");");
+
+            // create table notifications
             db.execSQL("create table " + NotificationContract.TABLE_NAME + " ("
                     + NotificationContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
                     + NotificationContract.Entry.FRIEND_ID + TYPE_TEXT + COMMA_SEP
@@ -349,10 +376,6 @@ public class DataProvider extends ContentProvider {
                     + NotificationContract.Entry.MESSAGE + TYPE_TEXT + COMMA_SEP
                     + NotificationContract.Entry.TYPE + TYPE_TEXT
                     + ");");
-        }
-
-        private DBHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override

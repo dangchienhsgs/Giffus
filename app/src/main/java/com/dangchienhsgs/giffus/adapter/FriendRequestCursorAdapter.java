@@ -11,44 +11,52 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.account.UserHandler;
+import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.provider.NotificationContract;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
 import com.dangchienhsgs.giffus.utils.Common;
-
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 
 
 public class FriendRequestCursorAdapter extends SimpleCursorAdapter {
     private ListView listView;
-    private String TAG="Simple Cursor Adapter";
+    private String TAG = "Simple Cursor Adapter";
+
     public FriendRequestCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags, ListView listView) {
         super(context, layout, c, from, to, flags);
-        this.listView=listView;
+        this.listView = listView;
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view;
-        if (convertView==null){
-            view=newView(mContext, mCursor, parent);
+        if (convertView == null) {
+            view = newView(mContext, mCursor, parent);
         } else {
-            view=convertView;
+            view = convertView;
         }
 
-        TextView textView=(TextView) view.findViewById(R.id.request_human_full_name);
-        Cursor cursor=getCursor();
-        cursor.moveToPosition(position);
-        textView.setText(cursor.getString(cursor.getColumnIndex(FriendContract.Entry.FULL_NAME)));
+        TextView textView = (TextView) view.findViewById(R.id.request_human_full_name);
+        ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
 
-        Button button=(Button) view.findViewById(R.id.button_accept_friend);
+        Cursor cursor = getCursor();
+        cursor.moveToPosition(position);
+
+        textView.setText(cursor.getString(cursor.getColumnIndex(FriendContract.Entry.FULL_NAME)));
+        avatar.setImageResource(
+                Common.HUMAN_ICON[Integer.parseInt(
+                        cursor.getString(cursor.getColumnIndex(FriendContract.Entry.AVATAR_ID))
+                )
+                        ]);
+
+        Button button = (Button) view.findViewById(R.id.button_accept_friend);
         button.setTag(position);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,13 +66,13 @@ public class FriendRequestCursorAdapter extends SimpleCursorAdapter {
 
                 // Move cursor to the position
                 // get the Index
-                Integer position=(Integer) view.getTag();
+                Integer position = (Integer) view.getTag();
                 cursor.moveToPosition(position);
-                Log.d(TAG, "Vi tri "+position);
+                Log.d(TAG, "Vi tri " + position);
 
                 // get userID of friend;
                 String friendID = cursor.getString(cursor.getColumnIndex(FriendContract.Entry.USER_ID));
-                String friendName=cursor.getString(cursor.getColumnIndex(FriendContract.Entry.USERNAME));
+                String friendName = cursor.getString(cursor.getColumnIndex(FriendContract.Entry.USERNAME));
 
                 // get Content values
                 ContentValues contentValues = new ContentValues();
@@ -81,20 +89,20 @@ public class FriendRequestCursorAdapter extends SimpleCursorAdapter {
                 contentResolver.update(
                         FriendContract.URI,
                         contentValues,
-                        FriendContract.Entry.USER_ID+"="+friendID,
+                        FriendContract.Entry.USER_ID + "=" + friendID,
                         null
                 );
 
                 // Remove notification
                 contentResolver.delete(
                         NotificationContract.URI,
-                        NotificationContract.Entry.FRIEND_ID+"="+friendID,
+                        NotificationContract.Entry.FRIEND_ID + "=" + friendID,
                         null);
                 // Get new Cursor
-                Cursor newCursor=contentResolver.query(
+                Cursor newCursor = contentResolver.query(
                         FriendContract.URI,
                         null,
-                        FriendContract.Entry.RELATIONSHIP+"="+FriendContract.WAIT_ACCEPTING,
+                        FriendContract.Entry.RELATIONSHIP + "=" + FriendContract.WAIT_ACCEPTING,
                         null,
                         FriendContract.Entry._ID
                 );
@@ -107,8 +115,8 @@ public class FriendRequestCursorAdapter extends SimpleCursorAdapter {
                 FriendRequestCursorAdapter.this.notifyDataSetChanged();
 
                 // Get user information
-                String username= UserHandler.getValueFromPreferences(Common.USERNAME, mContext);
-                String password= UserHandler.getValueFromPreferences(Common.PASSWORD, mContext);
+                String username = PreferencesHandler.getValueFromPreferences(Common.USERNAME, mContext);
+                String password = PreferencesHandler.getValueFromPreferences(Common.PASSWORD, mContext);
 
                 // Send accept to server
                 Log.d(TAG, "Send response to server");
@@ -119,7 +127,7 @@ public class FriendRequestCursorAdapter extends SimpleCursorAdapter {
         return view;
     }
 
-    private class FriendResponseSender extends AsyncTask<Void, Void, String>{
+    private class FriendResponseSender extends AsyncTask<Void, Void, String> {
         private String acceptUsername;
         private String acceptPassword;
         private String requireUsername;
@@ -132,13 +140,13 @@ public class FriendRequestCursorAdapter extends SimpleCursorAdapter {
 
         @Override
         protected String doInBackground(Void... voids) {
-            HashMap<String, String> hashMap=new HashMap<String, String>();
+            HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put(Common.ACTION, Common.ACTION_ACCEPT_FRIEND_REQUEST);
             hashMap.put(Common.ACCEPT_USER, acceptUsername);
             hashMap.put(Common.ACCEPT_PASSWORD, acceptPassword);
             hashMap.put(Common.REQUIRE_USER, requireUsername);
 
-            String result=ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, hashMap);
+            String result = ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, hashMap);
             Log.d(TAG, result);
             return result;
         }

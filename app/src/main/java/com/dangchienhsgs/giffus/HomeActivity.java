@@ -17,11 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.dangchienhsgs.giffus.account.UserHandler;
+import com.dangchienhsgs.giffus.adapter.DrawerAdapter;
 import com.dangchienhsgs.giffus.adapter.TabAdapter;
+import com.dangchienhsgs.giffus.client.PreferencesHandler;
+import com.dangchienhsgs.giffus.postcard.CreateCoverActivity;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.provider.GiftReceivedContract;
 import com.dangchienhsgs.giffus.provider.GiftSentContract;
@@ -84,9 +85,9 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
         createTabs();
         createNavigationDrawer();
 
-        username = UserHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext());
-        password = UserHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext());
-        registrationId = UserHandler.getValueFromPreferences(Common.REGISTRATION_ID, getApplicationContext());
+        username = PreferencesHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext());
+        password = PreferencesHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext());
+        registrationId = PreferencesHandler.getValueFromPreferences(Common.REGISTRATION_ID, getApplicationContext());
 
     }
 
@@ -133,98 +134,16 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
 
     // Create DrawerNavigation
     public void createNavigationDrawer() {
-
-        //getActionBar().setHomeButtonEnabled(true);
-
         mDrawerTitle=mTitle=getTitle();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_drawer);
 
-        // create the button to open drawer layout
-        /*mDrawerToggle=new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                R.drawable.ic_drawer,
-                R.string.drawer_open_description,
-                R.string.drawer_close_description
-        ){
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu();
-
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        //getActionBar().setHomeButtonEnabled(true);*/
-
         mDrawerListTitle = getResources().getStringArray(R.array.nav_drawer_items);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mDrawerListTitle));
+        Log.d(TAG, "So luong la " + mDrawerListTitle.length);
+        DrawerAdapter drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_item, mDrawerListTitle);
+        mDrawerList.setAdapter(drawerAdapter);
+
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
-
-    /**
-     * This class handle the Item of ListView in Drawer Navigation action click
-     * It point to subroutine selectItem (int position) where position is the
-     * order of item we click
-     */
-
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView adapterView, View view, int position, long l) {
-            Intent intent;
-            switch (position) {
-                // Do action here
-                case 0:
-                    //Start Notify Activity
-                    intent=new Intent(getApplicationContext(), NotifyActivity.class);
-                    startActivity(intent);
-                    break;
-                case 1:
-                    // Start friend Request Activity
-                    intent=new Intent(getApplicationContext(), FriendRequestsActivity.class);
-                    startActivity(intent);
-                    break;
-                case 2:
-                    //Intent intent=new Intent(getApplicationContext(), SettingsActivity.class);
-                    //startActivity(intent);
-                    break;
-                case Common.DRAWER_SIGN_OUT_ID:
-                    ContentResolver contentResolver=getContentResolver();
-                    contentResolver.delete(FriendContract.URI,null,null);
-                    contentResolver.delete(GiftSentContract.URI,null,null);
-                    contentResolver.delete(GiftReceivedContract.URI,null,null);
-                    contentResolver.delete(NotificationContract.URI,null,null);
-                    UserHandler.deleteFromPreferences(Common.USERNAME, getApplicationContext());
-                    UserHandler.deleteFromPreferences(Common.PASSWORD, getApplicationContext());
-                    intent=new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    finish();
-            }
-        }
-
-    }
-
-
-    /**
-     * Create account sync adapter
-     */
-
-    //public static Account createAccount(Context context){
-    //Account account=new Account(Common.ACCOUNT, Common.ACCOUNT_TYPE);
-    //AccountManager accountManager=(AccountManager) context.getSystemService()
-    //}
 
     /**
      * For TabListener implement action
@@ -236,6 +155,16 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
         mTitle = title;
         super.setTitle(title);
     }
+
+
+    /**
+     * Create account sync adapter
+     */
+
+    //public static Account createAccount(Context context){
+    //Account account=new Account(Common.ACCOUNT, Common.ACCOUNT_TYPE);
+    //AccountManager accountManager=(AccountManager) context.getSystemService()
+    //}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -250,13 +179,16 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch (id){
-            case R.id.action_add_friend:
-                Intent intent=new Intent(getApplicationContext(), SearchFriendsActivity.class);
+        switch (id) {
+            case R.id.action_search_friend:
+                Log.d(TAG, "Search Friend");
+                Intent intent = new Intent(getApplicationContext(), SearchFriendsActivity.class);
                 startActivity(intent);
                 break;
             case R.id.action_add_gift:
-
+                Intent intent2 = new Intent(getApplicationContext(), CreateCoverActivity.class);
+                startActivity(intent2);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -278,7 +210,50 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
 
     }
 
-    public void onClickAddFriend(View view){
+    public void onClickAddFriend(View view) {
+
+    }
+
+    /**
+     * This class handle the Item of ListView in Drawer Navigation action click
+     * It point to subroutine selectItem (int position) where position is the
+     * order of item we click
+     */
+
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView adapterView, View view, int position, long l) {
+            Intent intent;
+            switch (position) {
+                // Do action here
+                case 0:
+                    //Start Notify Activity
+                    intent = new Intent(getApplicationContext(), NotifyActivity.class);
+                    startActivity(intent);
+                    break;
+                case 1:
+                    // Start friend Request Activity
+                    intent = new Intent(getApplicationContext(), FriendRequestsActivity.class);
+                    startActivity(intent);
+                    break;
+                case 2:
+                    //Intent intent=new Intent(getApplicationContext(), SettingsActivity.class);
+                    //startActivity(intent);
+                    break;
+                case Common.DRAWER_SIGN_OUT_ID:
+                    ContentResolver contentResolver = getContentResolver();
+                    contentResolver.delete(FriendContract.URI, null, null);
+                    contentResolver.delete(GiftSentContract.URI, null, null);
+                    contentResolver.delete(GiftReceivedContract.URI, null, null);
+                    contentResolver.delete(NotificationContract.URI, null, null);
+                    PreferencesHandler.deleteFromPreferences(Common.USERNAME, getApplicationContext());
+                    PreferencesHandler.deleteFromPreferences(Common.PASSWORD, getApplicationContext());
+                    intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    finish();
+            }
+        }
 
     }
 }

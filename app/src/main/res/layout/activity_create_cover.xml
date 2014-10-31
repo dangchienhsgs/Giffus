@@ -1,34 +1,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_postcard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/background2"
     tools:context="com.dangchienhsgs.giffus.postcard.CreateCoverActivity">
 
-
     <EditText
+        android:id="@+id/text_large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/edit_large_text"
-        android:gravity="center"
-        android:text="Happy Birthday !"
-        android:textColor="@android:color/background_light"
-        android:textSize="60dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/edit_small_text"
-        android:text="Love you more than I can say !"
-        android:gravity="center"
-        android:textColor="@android:color/background_light"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="79dp"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:hint="Your wish for receiver"
+        android:textColor="@android:color/background_light"
+        android:textColorHint="@color/white"
+        android:textSize="60dp" />
+
+    <EditText
+        android:id="@+id/edit_small_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/text_large"
+        android:gravity="center"
+        android:hint="Love you more than I can say !"
+        android:textColor="@android:color/background_light"
+        android:textColorHint="@color/white" />
+
 </RelativeLayout>

@@ -1,0 +1,43 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.dangchienhsgs.giffus.postcard.CreateInnerActivity">
+
+    <item
+        android:id="@+id/action_change_background"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="Edit Background"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_edit_text_color"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Edit"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_next"
+        android:icon="@drawable/ic_action_next_item"
+        android:title="Continue"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_preview"
+        android:icon="@drawable/action_preview_icon"
+        android:title="Preview"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_change_size"
+        android:icon="@drawable/font_size_icon"
+        android:title="Change Font Size"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_change_font"
+        android:icon="@drawable/font_choose_icon"
+        android:title="Change Font Type"
+        app:showAsAction="ifRoom" />
+
+</menu>

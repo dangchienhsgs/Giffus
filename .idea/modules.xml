@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Giffus-master.iml" filepath="$PROJECT_DIR$/Giffus-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/animations_old/animations_old.iml" filepath="$PROJECT_DIR$/animations_old/animations_old.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gson-2.3/gson-2.3.iml" filepath="$PROJECT_DIR$/gson-2.3/gson-2.3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/map_libs/map_libs.iml" filepath="$PROJECT_DIR$/map_libs/map_libs.iml" />
     </modules>
   </component>
 </project>

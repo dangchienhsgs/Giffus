@@ -1,31 +1,31 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip" >
+    android:padding="6dip">
+
     <ImageView
-        android:id="@+id/icon_by_phone"
-        android:src="@drawable/ic_launcher"
+        android:id="@+id/avatar"
         android:layout_width="60dip"
-        android:onClick=""
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
-        android:scaleType="fitStart" />
+        android:onClick=""
+        android:scaleType="fitStart"
+        android:src="@drawable/ic_launcher" />
 
     <TextView
         android:id="@+id/text_full_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/checkBox"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/icon_by_phone"
+        android:layout_toLeftOf="@+id/checkBox"
+        android:layout_toRightOf="@id/avatar"
         android:gravity="center_vertical"
-        android:textIsSelectable="false"
-        android:textColor="@android:color/background_dark" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/background_dark"
+        android:textIsSelectable="false" />
 
     <TextView
         android:id="@+id/text_email"
@@ -33,19 +33,19 @@
         android:layout_height="26dip"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/checkBox"
-        android:layout_toRightOf="@id/icon_by_phone"
+        android:layout_toRightOf="@id/avatar"
         android:ellipsize="marquee"
-        android:singleLine="true"
         android:gravity="center_vertical"
+        android:singleLine="true"
         android:textColor="@android:color/darker_gray" />
 
     <CheckBox
+        android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBox"
         android:layout_alignBottom="@+id/text_email"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" />
 
 </RelativeLayout>

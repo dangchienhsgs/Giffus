@@ -1,23 +1,13 @@
 package com.dangchienhsgs.giffus;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.PowerManager;
-import android.preference.PreferenceManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.dangchienhsgs.giffus.account.Human;
-import com.dangchienhsgs.giffus.server.ServerUtilities;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 

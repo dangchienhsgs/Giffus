@@ -12,7 +12,7 @@ import java.util.Scanner;
  * Created by dangchienhsgs on 9/8/14.
  */
 public class URLContentHandler {
-    public String getURLContent(String... urls) {
+    public static String getURLContent(String... urls) {
         try {
             String result = "";
             for (int i = 0; i < urls.length; i++) {
@@ -37,7 +37,7 @@ public class URLContentHandler {
         }
     }
 
-    public String getURLFirstLine(String link) {
+    public static String getURLFirstLine(String link) {
         try {
             URL url = new URL(link);
             URLConnection connection = url.openConnection();

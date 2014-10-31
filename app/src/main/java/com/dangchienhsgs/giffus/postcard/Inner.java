@@ -1,53 +1,132 @@
 package com.dangchienhsgs.giffus.postcard;
 
-/**
- * Created by dangchienbn on 20/10/2014.
- */
+import com.dangchienhsgs.giffus.media.Song;
+
+import java.util.List;
+
+
 public class Inner {
-    private String background;
-    private String senderName;
-    private String avatarID;
+    public static final String NAME = "inner";
 
-    private String mainMess;
-    private String endMess;
+    public static final String JSON_NAME = "json_inner";
+    public static final String BACKGROUND_ID = "background";
+    public static final String AVATAR_ID = "avatar_id";
 
-    public String getBackground() {
-        return background;
+    public static final String SMALL_TEXT = "inner_small_text";
+    public static final String COLOR_SMALL_TEXT = "inner_color_small_text";
+    public static final String SIZE_SMALL_TEXT = "inner_size_small_text";
+    public static final String SMALL_TEXT_FONT = "inner_small_text_font";
+
+    public static final String LARGE_TEXT = "inner_large_text";
+    public static final String COLOR_LARGE_TEXT = "inner_color_large_text";
+    public static final String SIZE_LARGE_TEXT = "inner_size_large_text";
+    public static final String LARGE_TEXT_FONT = "inner_large_text_font";
+
+    public static final String SONG_URLS = "song_urls";
+    public static final String SONG_LYRICS = "song_lyrics";
+    public static final String SONG_TITLE = "song_titles";
+
+    private int backgroundID;
+    private int avatarID;
+
+    private String textLarge;
+    private int colorTextLarge;
+    private float sizeTextLarge;
+    private String fontTextLarge;
+
+
+    private String textSmall;
+    private int colorTextSmall;
+    private float sizeTextSmall;
+    private String fontTextSmall;
+    private List<Song> listSongs;
+
+    public String getFontTextLarge() {
+        return fontTextLarge;
     }
 
-    public void setBackground(String background) {
-        this.background = background;
+    public void setFontTextLarge(String fontTextLarge) {
+        this.fontTextLarge = fontTextLarge;
     }
 
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
+    public String getFontTextSmall() {
+        return fontTextSmall;
     }
 
-    public void setAvatarID(String avatarID) {
-        this.avatarID = avatarID;
+    public void setFontTextSmall(String fontTextSmall) {
+        this.fontTextSmall = fontTextSmall;
     }
 
-    public void setMainMess(String mainMess) {
-        this.mainMess = mainMess;
+    public int getBackgroundID() {
+        return backgroundID;
     }
 
-    public void setEndMess(String endMess) {
-        this.endMess = endMess;
+    public void setBackgroundID(int backgroundID) {
+        this.backgroundID = backgroundID;
     }
 
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public String getAvatarID() {
+    public int getAvatarID() {
         return avatarID;
     }
 
-    public String getMainMess() {
-        return mainMess;
+    public void setAvatarID(int avatarID) {
+        this.avatarID = avatarID;
     }
 
-    public String getEndMess() {
-        return endMess;
+    public String getTextLarge() {
+        return textLarge;
+    }
+
+    public void setTextLarge(String textLarge) {
+        this.textLarge = textLarge;
+    }
+
+    public int getColorTextLarge() {
+        return colorTextLarge;
+    }
+
+    public void setColorTextLarge(int colorTextLarge) {
+        this.colorTextLarge = colorTextLarge;
+    }
+
+    public float getSizeTextLarge() {
+        return sizeTextLarge;
+    }
+
+    public void setSizeTextLarge(float sizeTextLarge) {
+        this.sizeTextLarge = sizeTextLarge;
+    }
+
+    public String getTextSmall() {
+        return textSmall;
+    }
+
+    public void setTextSmall(String textSmall) {
+        this.textSmall = textSmall;
+    }
+
+    public int getColorTextSmall() {
+        return colorTextSmall;
+    }
+
+    public void setColorTextSmall(int colorTextSmall) {
+        this.colorTextSmall = colorTextSmall;
+    }
+
+    public float getSizeTextSmall() {
+        return sizeTextSmall;
+    }
+
+    public void setSizeTextSmall(float sizeTextSmall) {
+        this.sizeTextSmall = sizeTextSmall;
+    }
+
+    public List<Song> getListSongs() {
+        return listSongs;
+    }
+
+    public void setListSongs(List<Song> listSongs) {
+
+        this.listSongs = listSongs;
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dangchienhsgs.giffus" >
+    package="com.dangchienhsgs.giffus">
 
     <permission
         android:name="com.dangchienhsgs.giffus.permission.C2D_MESSAGE"
@@ -14,15 +14,16 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,12 +32,16 @@
         </activity>
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home" >
+            android:label="@string/title_activity_home"
+            android:uiOptions="splitActionBarWhenNarrow">
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow" />
         </activity>
 
         <receiver
             android:name=".GCMBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
@@ -47,49 +52,62 @@
         <provider
             android:name=".provider.DataProvider"
             android:authorities="com.dangchienhsgs.giffus.provider"
-            android:exported="false" >
-        </provider>
+            android:exported="false"></provider>
 
         <service android:name=".GcmIntentService" />
 
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register" >
-        </activity>
+            android:label="@string/title_activity_register"></activity>
         <activity
             android:name=".FriendRequestsActivity"
-            android:label="@string/title_activity_friend_requests" >
-        </activity>
+            android:label="@string/title_activity_friend_requests"></activity>
         <activity
             android:name=".NotifyActivity"
-            android:label="@string/title_activity_notify" >
-        </activity>
+            android:label="@string/title_activity_notify"></activity>
         <activity
             android:name=".SearchFriendsActivity"
-            android:label="@string/title_activity_search_friends" >
-        </activity>
+            android:label="@string/title_activity_search_friends"></activity>
         <activity
             android:name=".SyncFriendsActivity"
-            android:label="@string/title_activity_sync_friends" >
-        </activity>
+            android:label="@string/title_activity_sync_friends"></activity>
         <activity
             android:name=".SearchByNameActivity"
-            android:label="@string/title_activity_search_by_name" >
-        </activity>
-
-        <service
-            android:name=".service.UpdateFriendService"
-            android:exported="false" >
-        </service>
-
-        <activity
-            android:name=".postcard.EditCover"
-            android:label="@string/title_activity_edit_cover" >
-        </activity>
+            android:label="@string/title_activity_search_by_name"></activity>
         <activity
             android:name=".postcard.CreateCoverActivity"
-            android:label="@string/title_activity_create_cover" >
+            android:label="@string/title_activity_create_cover"></activity>
+        <activity
+            android:name=".postcard.CreateInnerActivity"
+            android:label="@string/title_activity_create_inner"></activity>
+        <activity
+            android:name=".postcard.PreviewCoverActivity"
+            android:label="@string/title_activity_cover_preview"></activity>
+        <activity
+            android:name=".postcard.ChooseFriendActivity"
+            android:label="@string/title_activity_choose_friend"
+            android:uiOptions="splitActionBarWhenNarrow">
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow" />
         </activity>
+        <activity
+            android:name=".postcard.PreviewInnerActivity"
+            android:label="@string/title_activity_preview_inner"></activity>
+        <activity
+            android:name=".postcard.TimePickerActivity"
+            android:label="@string/title_activity_time_picker"></activity>
+        <activity
+            android:name=".map.AddLocationActivity"
+            android:label="@string/title_activity_add_location"></activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDyiE-f2an6IKrEGJbFaoPjlDtSokCJNk4" />
     </application>
 
 </manifest>

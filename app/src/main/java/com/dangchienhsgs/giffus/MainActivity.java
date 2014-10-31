@@ -1,7 +1,6 @@
 package com.dangchienhsgs.giffus;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -17,12 +16,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.dangchienhsgs.giffus.account.UserHandler;
+import com.dangchienhsgs.giffus.human.UserHandler;
+import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.provider.DataHelper;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
 import com.dangchienhsgs.giffus.utils.URLContentHandler;
-import com.dangchienhsgs.giffus.utils.UrlBuilder;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -57,8 +56,8 @@ public class MainActivity extends ActionBarActivity {
         button_signIn = (Button) findViewById(R.id.button_signIn);
         button_register = (Button) findViewById(R.id.button_register);
 
-        String username = UserHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext());
-        String password = UserHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext());
+        String username = PreferencesHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext());
+        String password = PreferencesHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext());
 
         if (!username.isEmpty() && !password.isEmpty()) {
             Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
@@ -86,6 +85,27 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // onClick function to Button Sign in
+    public void onClickSignIn(View v) {
+        username = edit_username.getText().toString().trim();
+        password = edit_password.getText().toString().trim();
+
+        if (username.length() == 0 | password.length() == 0) {
+            Toast.makeText(getApplicationContext(), "Please complete your username and password !", Toast.LENGTH_SHORT).show();
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            String url = Common.SERVER_LINK + "?username=" +
+                    username + "&password=" + password + "&action=login";
+            new SignInTask(this, progressBar).execute(url);
+        }
+    }
+
+    public void onClickRegister(View view) {
+        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     /* Task check Username and Password when user log in
      * If it match, continue to create a URLContent Download Task to download the resposne
      */
@@ -95,7 +115,7 @@ public class MainActivity extends ActionBarActivity {
         private String result_signIn;
 
         public SignInTask(Activity activity, ProgressBar progressBar) {
-            this.activity=activity;
+            this.activity = activity;
             this.progressBar = progressBar;
 
         }
@@ -112,8 +132,8 @@ public class MainActivity extends ActionBarActivity {
                 // Successful sign in
                 // Save username and password to preferences
                 Log.d(TAG, "Sign in is successful");
-                UserHandler.saveValueToPreferences(Common.USERNAME, username, getApplicationContext());
-                UserHandler.saveValueToPreferences(Common.PASSWORD, password, getApplicationContext());
+                PreferencesHandler.saveValueToPreferences(Common.USERNAME, username, getApplicationContext());
+                PreferencesHandler.saveValueToPreferences(Common.PASSWORD, password, getApplicationContext());
                 // Down Load user info
                 new DownloadUserInfo(activity, username, password).execute();
 
@@ -129,10 +149,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private class RegisterIDTask extends AsyncTask<Void, Void, String> {
-        private GoogleCloudMessaging gcm;
-        private Activity activity;
         private static final int BACKOFF_MILLI_SECONDS = 2000;
         private static final int MAX_ATTEMPTS = 5;
+        private GoogleCloudMessaging gcm;
+        private Activity activity;
 
         private RegisterIDTask(Activity activity) {
             this.activity = activity;
@@ -210,7 +230,7 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(String s) {
             // Update registration id to client
             Log.d(TAG, "Save registration ID to preferences: " + Common.REGISTRATION_ID + ": " + registrationID);
-            UserHandler.saveValueToPreferences(Common.REGISTRATION_ID, registrationID, getApplicationContext());
+            PreferencesHandler.saveValueToPreferences(Common.REGISTRATION_ID, registrationID, getApplicationContext());
 
             // Start Home Activity
             Log.d(TAG, "Start sync data friends ");
@@ -268,7 +288,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
 
         protected String doInBackground(Void... strings) {
-            HashMap<String, String> hashMap=new HashMap<String, String>();
+            HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put(Common.USERNAME, username);
             hashMap.put(Common.PASSWORD, password);
             hashMap.put(Common.ACTION, Common.ACTION_GET_INFO_BY_USERNAME);
@@ -284,32 +304,11 @@ public class MainActivity extends ActionBarActivity {
             Log.d(TAG, "Save user's information to preferences");
             UserHandler.savedUserInfoToPreferences(preferences, result);
 
-            Log.d(TAG, "Test "+preferences.getString(Common.USER_ID, ""));
+            Log.d(TAG, "Test " + preferences.getString(Common.USER_ID, ""));
             // Start to registration ID to server
             new RegisterIDTask(activity).execute();
 
         }
-    }
-
-    // onClick function to Button Sign in
-    public void onClickSignIn(View v) {
-        username = edit_username.getText().toString().trim();
-        password = edit_password.getText().toString().trim();
-
-        if (username.length() == 0 | password.length() == 0) {
-            Toast.makeText(getApplicationContext(), "Please complete your username and password !", Toast.LENGTH_SHORT).show();
-        } else {
-            progressBar.setVisibility(View.VISIBLE);
-            String url = Common.SERVER_LINK + "?username=" +
-                    username + "&password=" + password + "&action=login";
-            new SignInTask(this, progressBar).execute(url);
-        }
-    }
-
-    public void onClickRegister(View view) {
-        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-        startActivity(intent);
-        finish();
     }
 
 

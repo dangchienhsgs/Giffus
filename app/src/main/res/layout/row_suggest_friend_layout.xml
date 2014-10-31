@@ -1,10 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip" >
+    android:padding="6dip">
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/avatar"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
@@ -14,25 +14,26 @@
         android:src="@drawable/ic_launcher" />
 
     <TextView
-        android:layout_marginLeft="5dp"
         android:id="@+id/request_human_full_name"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/icon"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toLeftOf="@+id/button_accept_friend"
+        android:layout_toRightOf="@+id/avatar"
+        android:layout_toStartOf="@+id/button_accept_friend"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:text="Description"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/button_accept_friend"
-        android:layout_toStartOf="@+id/button_accept_friend" />
+        android:text="Description" />
+
     <Button
+        android:id="@+id/button_accept_friend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Accept"
-        android:id="@+id/button_accept_friend"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:text="Accept" />
 
 </RelativeLayout>

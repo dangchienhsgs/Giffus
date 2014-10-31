@@ -2,14 +2,15 @@ package com.dangchienhsgs.giffus.utils;
 
 import android.content.ContentValues;
 
-import com.dangchienhsgs.giffus.account.Human;
+import com.dangchienhsgs.giffus.human.Human;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 
 
 public class ContentValuesBuilder {
-    public static ContentValues friendBuilder(Human human){
-        if (human!=null){
-            ContentValues contentValues=new ContentValues();
+    public static ContentValues friendBuilder(Human human) {
+        if (human != null) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(FriendContract.Entry.AVATAR_ID, human.getAvatarID());
             contentValues.put(FriendContract.Entry.USERNAME, human.getUsername());
             contentValues.put(FriendContract.Entry.USER_ID, human.getUserID());
             contentValues.put(FriendContract.Entry.BIRTHDAY, human.getBirthday());

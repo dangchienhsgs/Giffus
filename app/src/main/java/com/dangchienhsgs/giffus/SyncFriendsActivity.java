@@ -17,9 +17,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.dangchienhsgs.giffus.account.Human;
-import com.dangchienhsgs.giffus.account.UserHandler;
-import com.dangchienhsgs.giffus.adapter.HumanListAdapter;
+import com.dangchienhsgs.giffus.human.Human;
+import com.dangchienhsgs.giffus.adapter.HumanArrayListAdapter;
+import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
 import com.dangchienhsgs.giffus.utils.Common;
@@ -33,7 +33,7 @@ import java.util.List;
 
 
 public class SyncFriendsActivity extends ActionBarActivity {
-    private String TAG="Sync Friends";
+    private String TAG = "Sync Friends";
     private ListView listView;
     private TextView textView;
 
@@ -44,16 +44,17 @@ public class SyncFriendsActivity extends ActionBarActivity {
     private Button buttonSend;
 
     private Boolean[] listCheck;
-    private HumanListAdapter mAdapter;
+    private HumanArrayListAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync_friends);
 
-        listView=(ListView) findViewById(R.id.list_friend_to_add);
-        progressBar=(ProgressBar) findViewById(R.id.progressBar);
-        buttonSend=(Button) findViewById(R.id.button_send);
-        textView=(TextView) findViewById(R.id.text_descriptions);
+        listView = (ListView) findViewById(R.id.list_friend_to_add);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        buttonSend = (Button) findViewById(R.id.button_send);
+        textView = (TextView) findViewById(R.id.text_descriptions);
 
 
         // Set progressBar on and start sync
@@ -70,23 +71,24 @@ public class SyncFriendsActivity extends ActionBarActivity {
     /**
      * Get the list of mobile phones in user's contacts
      * Use it to query in server to find friends
+     *
      * @return
      */
-    public List<String> getListMobilePhone(){
-        List<String> list=new ArrayList<String>();
-        ContentResolver contentResolver=getContentResolver();
-        Cursor cursor=contentResolver.query(
+    public List<String> getListMobilePhone() {
+        List<String> list = new ArrayList<String>();
+        ContentResolver contentResolver = getContentResolver();
+        Cursor cursor = contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,
                 null,
                 null,
                 null
         );
-        if (cursor.getCount()>0){
-            while (cursor.moveToNext()){
-                String phoneNumber=cursor.getString(
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String phoneNumber = cursor.getString(
                         cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                if (phoneNumber.contains("+84")){
+                if (phoneNumber.contains("+84")) {
                     phoneNumber.replace("+84", "0");
                 }
                 list.add(phoneNumber);
@@ -95,57 +97,22 @@ public class SyncFriendsActivity extends ActionBarActivity {
         return list;
     }
 
-    public List<Human> getHumanList(List<String> listNumber){
-        List<Human> list=new ArrayList<Human>();
-        for (String number:listNumber){
-            String userInfo= ServerUtilities.getHumanInfoByAttribute(Common.MOBILE_PHONE, number);
-            if (userInfo.trim().equals(ServerUtilities.NOT_FOUND)){
-                Log.d(TAG, number+"fail");
+    public List<Human> getHumanList(List<String> listNumber) {
+        List<Human> list = new ArrayList<Human>();
+        for (String number : listNumber) {
+            String userInfo = ServerUtilities.getHumanInfoByAttribute(Common.MOBILE_PHONE, number);
+            if (userInfo.trim().equals(ServerUtilities.NOT_FOUND)) {
+                Log.d(TAG, number + "fail");
             } else {
-                try{
-                    Human human=new Human(userInfo);
+                try {
+                    Human human = new Human(userInfo);
                     list.add(human);
-                } catch (JSONException e){
-                    Log.d(TAG, "Json string from server is error"+userInfo);
+                } catch (JSONException e) {
+                    Log.d(TAG, "Json string from server is error" + userInfo);
                 }
             }
         }
         return list;
-    }
-
-    private class FindFriendsTask extends AsyncTask<Void, Void, Void>{
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Log.d(TAG, "is connecting to phoneBook to get list phone number");
-            listPhoneNumber=getListMobilePhone();
-
-            Log.d(TAG, "is connecting to server to get friends");
-            listHuman=getHumanList(listPhoneNumber);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            // set List View adapter
-            Log.d(TAG, "is setting list view adapter");
-            listCheck=new Boolean[listHuman.size()];
-            Arrays.fill(listCheck, true);
-            mAdapter=new HumanListAdapter(
-                    getApplicationContext(),
-                    R.layout.row_add_friends,
-                    listHuman,
-                    listCheck,
-                    true
-            );
-            listView.setAdapter(mAdapter);
-
-            // Set some components visible
-            progressBar.setVisibility(View.INVISIBLE);
-            buttonSend.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -167,7 +134,7 @@ public class SyncFriendsActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onClickSendFriendRequest(View view){
+    public void onClickSendFriendRequest(View view) {
         progressBar.setVisibility(View.VISIBLE);
 
         listView.setVisibility(View.INVISIBLE);
@@ -176,24 +143,59 @@ public class SyncFriendsActivity extends ActionBarActivity {
         new SendRequestTask().execute();
     }
 
-    private class SendRequestTask extends AsyncTask<Void, Void, Void>{
+    private class FindFriendsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            for (int i=0; i<listCheck.length; i++){
-                if (listCheck[i]){
-                    Human human=listHuman.get(i);
-                    Log.d(TAG, "Send friend request to "+human.getUsername());
+            Log.d(TAG, "is connecting to phoneBook to get list phone number");
+            listPhoneNumber = getListMobilePhone();
+
+            Log.d(TAG, "is connecting to server to get friends");
+            listHuman = getHumanList(listPhoneNumber);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            // set List View adapter
+            Log.d(TAG, "is setting list view adapter");
+            listCheck = new Boolean[listHuman.size()];
+            Arrays.fill(listCheck, true);
+            mAdapter = new HumanArrayListAdapter(
+                    getApplicationContext(),
+                    R.layout.row_add_friends,
+                    listHuman,
+                    listCheck,
+                    true
+            );
+            listView.setAdapter(mAdapter);
+
+            // Set some components visible
+            progressBar.setVisibility(View.INVISIBLE);
+            buttonSend.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private class SendRequestTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < listCheck.length; i++) {
+                if (listCheck[i]) {
+                    Human human = listHuman.get(i);
+                    Log.d(TAG, "Send friend request to " + human.getUsername());
                     ServerUtilities.sendRequestFriend(
-                            UserHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext()),
-                            UserHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext()),
+                            PreferencesHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext()),
+                            PreferencesHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext()),
                             listHuman.get(i).getUsername()
                     );
 
                     // update to database
-                    ContentValues contentValues= ContentValuesBuilder.friendBuilder(human);
+                    ContentValues contentValues = ContentValuesBuilder.friendBuilder(human);
                     contentValues.put(FriendContract.Entry.RELATIONSHIP, FriendContract.IS_REQUESTING);
-                    ContentResolver contentResolver=getContentResolver();
-                    contentResolver.insert(FriendContract.URI,contentValues);
+                    ContentResolver contentResolver = getContentResolver();
+                    contentResolver.insert(FriendContract.URI, contentValues);
                 }
             }
             return null;
@@ -201,7 +203,7 @@ public class SyncFriendsActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Intent intent=new Intent(getApplicationContext(), HomeActivity.class);
+            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(intent);
             finish();
         }

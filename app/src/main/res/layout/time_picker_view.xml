@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <com.dangchienhsgs.giffus.dialogs.timepicker.TimerView
+            android:id="@+id/timer_time_text"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:baselineAligned="false"
+            android:gravity="top"
+            android:paddingBottom="@dimen/medium_font_padding"
+            android:paddingLeft="@dimen/timer_padding_left"
+            android:paddingTop="@dimen/medium_font_padding">
+
+            <com.dangchienhsgs.giffus.dialogs.widget.ZeroTopPaddingTextView
+                android:id="@+id/hours_tens"
+                style="@style/medium_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="none"
+                android:singleLine="true" />
+
+            <com.dangchienhsgs.giffus.dialogs.widget.ZeroTopPaddingTextView
+                android:id="@+id/hours_ones"
+                style="@style/medium_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="none"
+                android:singleLine="true" />
+
+            <com.dangchienhsgs.giffus.dialogs.widget.ZeroTopPaddingTextView
+                android:id="@+id/hours_seperator"
+                style="@style/medium_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="none"
+                android:singleLine="true"
+                android:text="@string/time_picker_time_seperator" />
+
+            <com.dangchienhsgs.giffus.dialogs.widget.ZeroTopPaddingTextView
+                android:id="@+id/minutes_tens"
+                style="@style/medium_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="none"
+                android:singleLine="true" />
+
+            <com.dangchienhsgs.giffus.dialogs.widget.ZeroTopPaddingTextView
+                android:id="@+id/minutes_ones"
+                style="@style/medium_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="none"
+                android:singleLine="true" />
+
+            <com.dangchienhsgs.giffus.dialogs.widget.ZeroTopPaddingTextView
+                android:id="@+id/ampm_label"
+                style="@style/label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="none"
+                android:gravity="top"
+                android:singleLine="true"
+                android:text="@string/time_picker_ampm_label" />
+        </com.dangchienhsgs.giffus.dialogs.timepicker.TimerView>
+
+        <ImageButton
+            android:id="@+id/delete"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/key_background_dark"
+            android:contentDescription="@string/timer_delete"
+            android:gravity="center"
+            android:src="@drawable/ic_backspace_dark" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@color/default_divider_color_dark" />
+
+    <include
+        android:id="@+id/first"
+        layout="@layout/three_keys_view" />
+
+    <include
+        android:id="@+id/second"
+        layout="@layout/three_keys_view" />
+
+    <include
+        android:id="@+id/third"
+        layout="@layout/three_keys_view" />
+
+    <include
+        android:id="@+id/fourth"
+        layout="@layout/three_keys_view_leftright" />
+</LinearLayout>
