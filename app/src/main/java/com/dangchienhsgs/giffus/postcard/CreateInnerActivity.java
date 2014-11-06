@@ -161,6 +161,9 @@ public class CreateInnerActivity extends ActionBarActivity
                 // start Preview
                 startActivity(intent);
                 break;
+
+            case R.id.action_change_text_background:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

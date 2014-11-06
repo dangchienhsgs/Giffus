@@ -31,9 +31,14 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/avatar"
             android:layout_toRightOf="@+id/avatar"
+            android:background="@drawable/text_background"
             android:ems="10"
+            android:gravity="top"
             android:hint="From: "
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:text="Hello World"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
 
 
     </RelativeLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/edit_location_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter the title for this location" />
+
+    <TextView
+        android:id="@+id/text_keep_secret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_location_title"
+        android:paddingTop="10dp"
+        android:text="Keep it secret ?" />
+
+    <CheckBox
+        android:id="@+id/check_box_keep_secret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text_keep_secret"
+        android:layout_toEndOf="@+id/text_keep_secret"
+        android:layout_toRightOf="@+id/text_keep_secret" />
+
+    <EditText
+        android:id="@+id/edit_location_hint"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_keep_secret"
+        android:hint="Give the hint for receiver" />
+
+</RelativeLayout>

@@ -39,5 +39,10 @@
         android:icon="@drawable/font_choose_icon"
         android:title="Change Font Type"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_change_text_background"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Change Text Background"
+        app:showAsAction="ifRoom" />
 
 </menu>

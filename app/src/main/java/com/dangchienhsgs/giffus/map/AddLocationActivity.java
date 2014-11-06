@@ -4,23 +4,20 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.server.ServerUtilities;
 import com.dangchienhsgs.giffus.utils.URLContentHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -28,7 +25,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 public class AddLocationActivity extends Activity implements AdapterView.OnItemClickListener,
         GoogleMap.OnMarkerClickListener {
@@ -41,7 +37,8 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
 
     private GoogleMap googleMap;
 
-    private Marker markerOptions;
+    private Marker choosenMaker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,11 +75,19 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
                     TextView placeTitle = (TextView) view.findViewById(R.id.location_title);
                     placeTitle.setText(marker.getTitle());
 
-                    Button button = (Button) view.findViewById(R.id.accept_button);
-                    button.setOnClickListener(new View.OnClickListener() {
+                    ImageView imageAdd = (ImageView) view.findViewById(R.id.image_add_location);
+                    imageAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            markerOptions = marker;
+                            choosenMaker = marker;
+
+                            // Save data to location
+                            GiftLocation location = new GiftLocation();
+                            location.setTitle(marker.getTitle());
+                            location.setLatitude(marker.getPosition().latitude);
+                            location.setLongitude(marker.getPosition().longitude);
+
+                            //
                         }
                     });
 
@@ -175,13 +180,15 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
 
         @Override
         protected void onPostExecute(LatLng result) {
+            // Add a maker to the google map
+
             MarkerOptions markerOptions = new MarkerOptions().position(result).title(description);
             googleMap.addMarker(markerOptions);
+
+            // Move camera to that position
             CameraPosition cameraPosition = new CameraPosition.Builder().target(
                     result).zoom(12).build();
-
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
         }
     }
 }
