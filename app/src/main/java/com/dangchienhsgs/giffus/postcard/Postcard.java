@@ -1,13 +1,15 @@
 package com.dangchienhsgs.giffus.postcard;
-
 import android.content.ContentValues;
 
 import com.dangchienhsgs.giffus.human.Human;
+import com.dangchienhsgs.giffus.map.GiftLocation;
 
 public class Postcard {
     private final String COMMA_SEP = ",";
     private Cover cover;
     private Inner inner;
+
+    private GiftLocation location;
     private Human sender;
     private Human receiver;
 
