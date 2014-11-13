@@ -61,6 +61,7 @@ public class Common {
 
     public static final String ROBOTO_LIGHT_FONT_PATH = "/system/fonts/Roboto-Light.ttf";
 
+    public static final String JSON_GIFFUS_LOCATION = "json_giffus_location";
 
     // This is the order of Drawer Navigation List
     public static final int DRAWER_NOTIFICATIONS_ID = 0;
@@ -78,7 +79,10 @@ public class Common {
 
     public static final int[] COVER_BACKGROUND = {
             R.drawable.background, R.drawable.background2,
+    };
 
+    public static final int[] TEXT_BACKGROUND = {
+            R.drawable.text_background_blue_gray
 
     };
 

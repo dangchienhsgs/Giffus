@@ -31,7 +31,7 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/avatar"
             android:layout_toRightOf="@+id/avatar"
-            android:background="@drawable/text_background"
+            android:background="@drawable/text_background_blue_gray"
             android:ems="10"
             android:gravity="top"
             android:hint="From: "

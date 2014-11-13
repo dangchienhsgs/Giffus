@@ -26,12 +26,10 @@ import com.google.gson.Gson;
 public class CreateCoverActivity extends ActionBarActivity implements FontPickerDialog.FontPickerDialogListener,
         NumberPickerDialogFragment.NumberPickerDialogHandler, PicturesPickerDialogs.OnSelectedPicturesListener {
 
+    private static final int ADD_LOCATION_CODE = 1;
     private Cover cover = new Cover();
     private String TAG = "Create cover activity";
-
-
     private RelativeLayout mLayout;
-
     private EditText editLargeTxt;
     private EditText editSmallTxt;
 
@@ -39,20 +37,25 @@ public class CreateCoverActivity extends ActionBarActivity implements FontPicker
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        // remove title bar from action bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayUseLogoEnabled(false);
 
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        // set Content View
         setContentView(R.layout.activity_create_cover);
 
+        // init components
         editLargeTxt = (EditText) findViewById(R.id.text_large);
         editSmallTxt = (EditText) findViewById(R.id.edit_small_text);
 
+        mLayout = (RelativeLayout) findViewById(R.id.layout_postcard);
+
         editLargeTxt.setTextColor(editLargeTxt.getCurrentTextColor());
 
-        // Init Data cover
+        // Init data cover
         cover.setBackgroundID(1);
         cover.setFontTextLarge(Common.ROBOTO_LIGHT_FONT_PATH);
         cover.setTextLarge("");
@@ -63,8 +66,6 @@ public class CreateCoverActivity extends ActionBarActivity implements FontPicker
         editSmallTxt.setTypeface(Typeface.createFromFile(Common.ROBOTO_LIGHT_FONT_PATH));
         editSmallTxt.setTypeface(Typeface.createFromFile(Common.ROBOTO_LIGHT_FONT_PATH));
 
-
-        mLayout = (RelativeLayout) findViewById(R.id.layout_postcard);
     }
 
 
@@ -128,7 +129,7 @@ public class CreateCoverActivity extends ActionBarActivity implements FontPicker
             case R.id.action_preview:
                 intent = new Intent(getApplicationContext(), PreviewCoverActivity.class);
 
-                // obtain cover to send to Preview ACtivity
+                // obtain cover to send to Preview Activity
                 cover = obtainCover();
 
                 // convert cover
@@ -141,7 +142,7 @@ public class CreateCoverActivity extends ActionBarActivity implements FontPicker
 
             case R.id.action_add_map:
                 intent = new Intent(getApplicationContext(), AddLocationActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, ADD_LOCATION_CODE);
                 break;
 
 
@@ -194,5 +195,18 @@ public class CreateCoverActivity extends ActionBarActivity implements FontPicker
     public void onSelectedPictures(PicturesPickerDialogs dialogs, int position) {
         mLayout.setBackgroundResource(Common.COVER_BACKGROUND[position]);
         cover.setBackgroundID(position);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADD_LOCATION_CODE) {
+            // This is the data from the adding map location process
+            // Check result code
+            if (resultCode == RESULT_OK) {
+                String jsonLocation = data.getStringExtra(Common.JSON_GIFFUS_LOCATION);
+
+            }
+        }
+
     }
 }

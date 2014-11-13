@@ -355,7 +355,7 @@ public class DataProvider extends ContentProvider {
 
                     + GiftSentContract.Entry.INNER_SONG_LYRICS + TYPE_TEXT + COMMA_SEP
                     + GiftSentContract.Entry.INNER_SONG_TITLE + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_SONG_URLS + TYPE_TEXT + COMMA_SEP
+                    + GiftSentContract.Entry.INNER_SONG_URLS + TYPE_TEXT
                     + ");");
             // create table gift sent
             db.execSQL("create table " + GiftReceivedContract.TABLE_NAME + " ("

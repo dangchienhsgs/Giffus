@@ -31,7 +31,7 @@ public class GcmIntentService extends IntentService {
     }
 
     /**
-     * Send notification and return to notification acitvity
+     * Send notification and return to notification activity
      *
      * @param context
      * @param text

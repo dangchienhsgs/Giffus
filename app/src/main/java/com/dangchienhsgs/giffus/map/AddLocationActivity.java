@@ -1,6 +1,7 @@
 package com.dangchienhsgs.giffus.map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
+import com.dangchienhsgs.giffus.postcard.CreateCoverActivity;
+import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.utils.URLContentHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,12 +25,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AddLocationActivity extends Activity implements AdapterView.OnItemClickListener,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener, AddLocationDialog.AddLocationListener {
 
     private String TAG = "Add Location Activity";
 
@@ -76,6 +80,10 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
                     placeTitle.setText(marker.getTitle());
 
                     ImageView imageAdd = (ImageView) view.findViewById(R.id.image_add_location);
+
+                    // Set onClickListener for the maker add image
+                    // When the add-image be pressed, we choose the location
+
                     imageAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -87,7 +95,15 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
                             location.setLatitude(marker.getPosition().latitude);
                             location.setLongitude(marker.getPosition().longitude);
 
-                            //
+                            // Convert location to json string
+                            Gson gson = new Gson();
+                            String jsonLocation = gson.toJson(location, GiftLocation.class);
+
+                            // Create intent and set result
+                            Intent intent = new Intent();
+                            intent.putExtra(Common.JSON_GIFFUS_LOCATION, jsonLocation);
+                            setResult(RESULT_OK, intent);
+                            finish();
                         }
                     });
 
@@ -142,6 +158,11 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
         return true;
     }
 
+    @Override
+    public void onLocationAdded(GiftLocation location) {
+        // Do something
+    }
+
     private class DownloadPlaceInformation extends AsyncTask<String, Void, LatLng> {
         private String description;
         private String refs;
@@ -191,4 +212,5 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
     }
+
 }

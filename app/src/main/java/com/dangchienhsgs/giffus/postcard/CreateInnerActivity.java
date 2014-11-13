@@ -179,7 +179,7 @@ public class CreateInnerActivity extends ActionBarActivity
         Typeface font = Typeface.createFromFile(dialog.getSelectedFont());
         if (editLargeText.hasFocus()) {
             // Change font and save data
-            Log.d(TAG, "LArge");
+            Log.d(TAG, "Large");
             editLargeText.setTypeface(font);
             inner.setFontTextLarge(dialog.getSelectedFont());
 

@@ -1,25 +1,31 @@
 package com.dangchienhsgs.giffus.map;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
 
-/**
- * Created by dangchienhsgs on 06/11/2014.
- */
 public class AddLocationDialog extends DialogFragment {
+    private final String TAG = "Add Location Dialog";
+
+
     private CheckBox checkBoxSecret;
     private EditText editHint;
+    private GiftLocation location;
+
+    private AddLocationListener mListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -63,6 +69,11 @@ public class AddLocationDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // Do something here
+                        if (location == null) {
+                            Toast.makeText(getActivity(), "You didn't choose any location", Toast.LENGTH_SHORT).show();
+                        } else {
+                            mListener.onLocationAdded(location);
+                        }
                     }
                 }
         );
@@ -73,7 +84,19 @@ public class AddLocationDialog extends DialogFragment {
         return builder.create();
     }
 
-    public interface onAddLocationListener {
-        public void onLocationAdded();
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (AddLocationListener) activity;
+        } catch (ClassCastException e) {
+            Log.d(TAG, "Your activity did not implement the AddLocationListener");
+        }
+    }
+
+
+    public interface AddLocationListener {
+        public void onLocationAdded(GiftLocation location);
     }
 }
