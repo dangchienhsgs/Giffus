@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/action_edit_text_color"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/rainbow"
         android:title="Edit"
         app:showAsAction="always" />
     <item
@@ -20,23 +20,24 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/action_preview"
-        android:icon="@drawable/action_preview_icon"
+        android:icon="@drawable/eye"
         android:title="Preview"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
+        android:icon="@drawable/settings"
         android:title="@string/action_settings"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_change_font"
-        android:icon="@drawable/font_choose_icon"
+        android:icon="@drawable/typography"
         android:title="Font"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_change_size"
-        android:icon="@drawable/font_size_icon"
+        android:icon="@drawable/typography"
         android:title="Font size"
         app:showAsAction="ifRoom" />
     <item
@@ -44,6 +45,10 @@
         android:icon="@drawable/ic_action_map"
         android:title="Add a location for this"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_remove_location"
+        android:title="Remove location"
+        app:showAsAction="ifRoom"/>
 
 
 </menu>

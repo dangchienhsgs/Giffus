@@ -10,10 +10,12 @@ public class FriendContract implements DataContract {
 
 
     public final static int ALREADY_FRIEND = 0;
-    public final static int IS_REQUESTING = 1;
 
-    // this friend wait we is waiting us to ace cept
+    public final static int IS_REQUESTING = 1;
+    // this friend wait we is waiting us to accept
     public final static int WAIT_ACCEPTING = 2;
+
+    public final static int NO_RELATION = 3;
 
     public class Entry {
         public static final String _ID = "_id";

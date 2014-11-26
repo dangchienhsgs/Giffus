@@ -8,32 +8,34 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.dangchienhsgs.giffus.adapter.NotificationCursorAdapter;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.provider.NotificationContract;
 
 
 public class NotifyActivity extends ListActivity {
-    private String[] fromColumns={
+    private String[] fromColumns = {
             NotificationContract.Entry.MESSAGE
     };
 
-    private int[] toFields={
-            R.id.message_notification
+    private int[] toFields = {
+            R.id.text_notification_message
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ContentResolver contentResolver=getContentResolver();
-        Cursor cursor=contentResolver.query(
+        ContentResolver contentResolver = getContentResolver();
+        Cursor cursor = contentResolver.query(
                 NotificationContract.URI,
                 null,
                 null,
                 null,
-                FriendContract.Entry._ID
+                null
         );
 
-        SimpleCursorAdapter cursorAdapter=new SimpleCursorAdapter(
+        NotificationCursorAdapter cursorAdapter = new NotificationCursorAdapter(
                 this,
                 R.layout.row_notification_layout,
                 cursor,

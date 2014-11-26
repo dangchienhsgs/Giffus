@@ -36,7 +36,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_action_play"
+        android:src="@drawable/button_play"
         android:text="Download and Play" />
 
     <ProgressBar
@@ -65,7 +65,7 @@
         android:layout_alignBottom="@+id/button_play"
         android:layout_toLeftOf="@+id/button_play"
         android:layout_toStartOf="@+id/button_play"
-        android:src="@drawable/ic_action_previous" />
+        android:src="@drawable/button_previous" />
 
     <ImageButton
         android:id="@+id/button_next"
@@ -75,6 +75,6 @@
         android:layout_alignBottom="@+id/button_play"
         android:layout_toEndOf="@+id/button_play"
         android:layout_toRightOf="@+id/button_play"
-        android:src="@drawable/ic_action_next" />
+        android:src="@drawable/button_forward" />
 
 </RelativeLayout>

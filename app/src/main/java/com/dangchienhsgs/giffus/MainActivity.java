@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.dangchienhsgs.giffus.human.UserHandler;
+import com.dangchienhsgs.giffus.utils.UserHandler;
 import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.provider.DataHelper;
 import com.dangchienhsgs.giffus.utils.Common;

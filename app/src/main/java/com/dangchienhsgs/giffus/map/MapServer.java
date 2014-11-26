@@ -48,6 +48,8 @@ public class MapServer {
             sb.append("?key=" + Common.GOOGLE_MAP_API_KEY);
             //sb.append("&components=country:");
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
+
+            Log.d(TAG, sb.toString());
             URL url = new URL(sb.toString());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());

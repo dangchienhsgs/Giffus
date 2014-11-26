@@ -34,7 +34,16 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         Log.d(TAG, textView.getText().toString());
 
         // Set icon
-        icon.setImageResource(Common.HUMAN_ICON[0]);
+        switch (position) {
+            case Common.DRAWER_NOTIFICATIONS_ID:
+                //icon.setImageResource(R.drawable.);
+                break;
+            case Common.DRAWER_HOME_ID:
+                break;
+            case Common.DRAWER_ACCOUNT_ID:
+                icon.setImageResource(R.drawable.profle);
+                break;
+        }
 
         return convertView;
     }

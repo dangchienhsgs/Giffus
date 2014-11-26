@@ -1,44 +1,64 @@
 package com.dangchienhsgs.giffus.postcard;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
 import com.dangchienhsgs.giffus.client.PreferencesHandler;
+import com.dangchienhsgs.giffus.dialogs.alert.MyAlertDialog;
+import com.dangchienhsgs.giffus.dialogs.mapdialogs.LocationDialog;
+import com.dangchienhsgs.giffus.map.GiftLocation;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.google.gson.Gson;
 
-public class PreviewCoverActivity extends Activity {
+
+public class PreviewCoverActivity extends ActionBarActivity implements LocationDialog.OnReturnLocationDialogListener {
     private String TAG = "Preview Cover Activity";
 
     private TextView textLarge;
     private TextView textSmall;
+
+    private Postcard postcard;
     private Cover cover;
+    private String flag;
+
+    private boolean isChecked;
+
+    private String jsonPostcard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        // remove title bar from action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayUseLogoEnabled(false);
         setContentView(R.layout.activity_cover_preview);
 
-        Intent intent = getIntent();
-        String jsonCover = intent.getStringExtra(Cover.JSON_NAME);
-        cover = new Gson().fromJson(jsonCover, Cover.class);
+        initComponents();
+    }
 
+    public void initComponents() {
+
+        Intent intent = getIntent();
+        jsonPostcard = intent.getStringExtra(Common.JSON_POSTCARD_STRING);
+        flag = intent.getStringExtra(Common.FLAG);
+
+        postcard = new Gson().fromJson(jsonPostcard, Postcard.class);
+
+        cover = postcard.getCover();
 
         //set Text Large
         textLarge = (TextView) findViewById(R.id.text_large_preview);
@@ -56,9 +76,8 @@ public class PreviewCoverActivity extends Activity {
 
         // setBackground
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.layout_cover_preview);
-        if (relativeLayout == null) Log.d(TAG, "NULL");
-        Log.d(TAG, "Background " + cover.getBackgroundID());
         relativeLayout.setBackgroundResource(Common.COVER_BACKGROUND[cover.getBackgroundID()]);
+
 
     }
 
@@ -76,9 +95,74 @@ public class PreviewCoverActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+
+        switch (id) {
+            case R.id.action_show_location:
+                actionShowLocation();
+                break;
+            case R.id.action_next:
+                actionNext();
+                break;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public void actionNext() {
+        try {
+            Inner inner = postcard.getInner();
+            if (inner == null) {
+                Toast.makeText(this, "The inner have not been set", Toast.LENGTH_SHORT).show();
+            } else {
+                if (isChecked) {
+
+                }
+                Intent intent = new Intent(this, PreviewInnerActivity.class);
+                intent.putExtra(Common.JSON_POSTCARD_STRING, jsonPostcard);
+                intent.putExtra(Common.FLAG, Common.FLAG_OPEN_POSTCARD);
+                startActivity(intent);
+            }
+        } catch (NullPointerException e) {
+            Toast.makeText(this, "The inner have not been set", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void actionShowLocation() {
+        try {
+            GiftLocation location = postcard.getLocation();
+
+            LocationDialog locationDialog = new LocationDialog();
+            locationDialog.setLocation(location);
+            locationDialog.show(getFragmentManager(), "Map Dialog");
+
+        } catch (NullPointerException e) {
+            // Not contains any location
+            MyAlertDialog dialog = new MyAlertDialog();
+            dialog.setTextAlert(
+                    "This gift not contains any location"
+            );
+            dialog.setTitle("Alert");
+            dialog.setListener(new MyAlertDialog.OnMyAlertDialogListener() {
+                @Override
+                public void onMyDialogClose() {
+                    // Do nothing
+                }
+
+                @Override
+                public void onMyDialogAccept() {
+                    // do nothing
+                }
+            });
+
+            dialog.show(getFragmentManager(), "Alert Dialog");
+        }
+
+    }
+
+    @Override
+    public void onReturnLocation(boolean isChecked) {
+        if (isChecked == true) {
+            this.isChecked = true;
+        }
     }
 }

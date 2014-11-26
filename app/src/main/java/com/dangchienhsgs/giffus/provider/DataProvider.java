@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+import com.dangchienhsgs.giffus.postcard.Postcard;
 import com.dangchienhsgs.giffus.utils.SelectionBuilder;
 
 /**
@@ -24,12 +25,10 @@ public class DataProvider extends ContentProvider {
     // Define CODE DETERMINE OF TABLE
     public static final int TABLE_FRIEND_ALL_ROWS = 0;
     public static final int TABLE_FRIEND_SINGLE_ROW = 1;
-    public static final int TABLE_GIFT_SENT_ALL_ROWS = 2;
-    public static final int TABLE_GIFT_SENT_SINGLE_ROW = 3;
-    public static final int TABLE_GIFT_RECEIVER_ALL_ROWS = 4;
-    public static final int TABLE_GIFT_RECEIVER_SINGLE_ROW = 5;
-    public static final int TABLE_NOTIFICATION_ALL_ROW = 6;
-    public static final int TABLE_NOTIFICATION_SINGLE_ROW = 7;
+    public static final int TABLE_POSTCARD_ALL_ROWS = 2;
+    public static final int TABLE_POSTCARD_SINGLE_ROW = 3;
+    public static final int TABLE_NOTIFICATION_ALL_ROW = 4;
+    public static final int TABLE_NOTIFICATION_SINGLE_ROW = 5;
     public static final UriMatcher uriMatcher;
 
     /**
@@ -50,11 +49,9 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI(CONTENT_AUTHORITY, FriendContract.TABLE_NAME, TABLE_FRIEND_ALL_ROWS);
         uriMatcher.addURI(CONTENT_AUTHORITY, FriendContract.TABLE_NAME + "/#", TABLE_FRIEND_SINGLE_ROW);
 
-        uriMatcher.addURI(CONTENT_AUTHORITY, GiftSentContract.TABLE_NAME, TABLE_GIFT_SENT_ALL_ROWS);
-        uriMatcher.addURI(CONTENT_AUTHORITY, GiftSentContract.TABLE_NAME + "/#", TABLE_GIFT_SENT_SINGLE_ROW);
 
-        uriMatcher.addURI(CONTENT_AUTHORITY, GiftReceivedContract.TABLE_NAME, TABLE_GIFT_RECEIVER_ALL_ROWS);
-        uriMatcher.addURI(CONTENT_AUTHORITY, GiftReceivedContract.TABLE_NAME + "/#", TABLE_GIFT_RECEIVER_SINGLE_ROW);
+        uriMatcher.addURI(CONTENT_AUTHORITY, PostcardContract.TABLE_NAME, TABLE_POSTCARD_ALL_ROWS);
+        uriMatcher.addURI(CONTENT_AUTHORITY, PostcardContract.TABLE_NAME + "/#", TABLE_POSTCARD_SINGLE_ROW);
 
         uriMatcher.addURI(CONTENT_AUTHORITY, NotificationContract.TABLE_NAME, TABLE_NOTIFICATION_ALL_ROW);
         uriMatcher.addURI(CONTENT_AUTHORITY, NotificationContract.TABLE_NAME + "/#", TABLE_NOTIFICATION_SINGLE_ROW);
@@ -102,18 +99,11 @@ public class DataProvider extends ContentProvider {
                 queryBuilder.setTables(FriendContract.TABLE_NAME);
                 queryBuilder.appendWhere("_id = " + uri.getLastPathSegment());
                 break;
-            case TABLE_GIFT_SENT_ALL_ROWS:
-                queryBuilder.setTables(GiftSentContract.TABLE_NAME);
+            case TABLE_POSTCARD_ALL_ROWS:
+                queryBuilder.setTables(PostcardContract.TABLE_NAME);
                 break;
-            case TABLE_GIFT_SENT_SINGLE_ROW:
-                queryBuilder.setTables(GiftSentContract.TABLE_NAME);
-                queryBuilder.appendWhere("_id = " + uri.getLastPathSegment());
-                break;
-            case TABLE_GIFT_RECEIVER_ALL_ROWS:
-                queryBuilder.setTables(GiftReceivedContract.TABLE_NAME);
-                break;
-            case TABLE_GIFT_RECEIVER_SINGLE_ROW:
-                queryBuilder.setTables(GiftReceivedContract.TABLE_NAME);
+            case TABLE_POSTCARD_SINGLE_ROW:
+                queryBuilder.setTables(PostcardContract.TABLE_NAME);
                 queryBuilder.appendWhere("_id = " + uri.getLastPathSegment());
                 break;
             case TABLE_NOTIFICATION_ALL_ROW:
@@ -154,13 +144,10 @@ public class DataProvider extends ContentProvider {
                 id = database.insertOrThrow(FriendContract.TABLE_NAME, null, contentValues);
                 break;
 
-            case TABLE_GIFT_SENT_ALL_ROWS:
-                id = database.insertOrThrow(GiftSentContract.TABLE_NAME, null, contentValues);
+            case TABLE_POSTCARD_ALL_ROWS:
+                id = database.insertOrThrow(PostcardContract.TABLE_NAME, null, contentValues);
                 break;
 
-            case TABLE_GIFT_RECEIVER_ALL_ROWS:
-                id = database.insertOrThrow(GiftReceivedContract.TABLE_NAME, null, contentValues);
-                break;
             case TABLE_NOTIFICATION_ALL_ROW:
                 id = database.insertOrThrow(NotificationContract.TABLE_NAME, null, contentValues);
                 break;
@@ -193,24 +180,13 @@ public class DataProvider extends ContentProvider {
                         .where(selection, selections)
                         .delete(db);
                 break;
-            case TABLE_GIFT_RECEIVER_ALL_ROWS:
-                count = selectionBuilder.table(GiftReceivedContract.TABLE_NAME)
+            case TABLE_POSTCARD_ALL_ROWS:
+                count = selectionBuilder.table(PostcardContract.TABLE_NAME)
                         .where(selection, selections)
                         .delete(db);
                 break;
-            case TABLE_GIFT_RECEIVER_SINGLE_ROW:
-                count = selectionBuilder.table(GiftReceivedContract.TABLE_NAME)
-                        .where(FriendContract.Entry._ID + "=?", uri.getLastPathSegment())
-                        .where(selection, selections)
-                        .delete(db);
-                break;
-            case TABLE_GIFT_SENT_ALL_ROWS:
-                count = selectionBuilder.table(GiftSentContract.TABLE_NAME)
-                        .where(selection, selections)
-                        .delete(db);
-                break;
-            case TABLE_GIFT_SENT_SINGLE_ROW:
-                count = selectionBuilder.table(GiftSentContract.TABLE_NAME)
+            case TABLE_POSTCARD_SINGLE_ROW:
+                count = selectionBuilder.table(PostcardContract.TABLE_NAME)
                         .where(FriendContract.Entry._ID + "=?", uri.getLastPathSegment())
                         .where(selection, selections)
                         .delete(db);
@@ -254,25 +230,14 @@ public class DataProvider extends ContentProvider {
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
-            case TABLE_GIFT_SENT_ALL_ROWS:
-                count = builder.table(GiftSentContract.TABLE_NAME)
+            case TABLE_POSTCARD_ALL_ROWS:
+                count = builder.table(PostcardContract.TABLE_NAME)
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
-            case TABLE_GIFT_SENT_SINGLE_ROW:
-                count = builder.table(GiftSentContract.TABLE_NAME)
-                        .where(GiftSentContract.Entry._ID + "=?", uri.getLastPathSegment())
-                        .where(selection, selections)
-                        .update(database, contentValues);
-                break;
-            case TABLE_GIFT_RECEIVER_ALL_ROWS:
-                count = builder.table(GiftReceivedContract.TABLE_NAME)
-                        .where(selection, selections)
-                        .update(database, contentValues);
-                break;
-            case TABLE_GIFT_RECEIVER_SINGLE_ROW:
-                count = builder.table(GiftReceivedContract.TABLE_NAME)
-                        .where(GiftReceivedContract.Entry._ID + "=?", uri.getLastPathSegment())
+            case TABLE_POSTCARD_SINGLE_ROW:
+                count = builder.table(PostcardContract.TABLE_NAME)
+                        .where(PostcardContract.Entry._ID + "=?", uri.getLastPathSegment())
                         .where(selection, selections)
                         .update(database, contentValues);
                 break;
@@ -320,52 +285,15 @@ public class DataProvider extends ContentProvider {
                     + FriendContract.Entry.BIRTHDAY + TYPE_TEXT + COMMA_SEP
                     + FriendContract.Entry.GENRE + TYPE_TEXT + COMMA_SEP
                     + FriendContract.Entry.MOBILE_PHONE + TYPE_TEXT + COMMA_SEP
-                    + FriendContract.Entry.AVATAR_ID + TYPE_TEXT
-                    + ");");
-
-            // create table gift receiver
-            db.execSQL("create table " + GiftSentContract.TABLE_NAME + " ("
-                    + GiftSentContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
-                    + GiftSentContract.Entry.GIFT_ID + TYPE_TEXT + COMMA_SEP
-
-                    + GiftSentContract.Entry.COVER_BACKGROUND_ID + TYPE_INT + COMMA_SEP
-
-                    + GiftSentContract.Entry.COVER_COLOR_LARGE_TEXT + TYPE_INT + COMMA_SEP
-                    + GiftSentContract.Entry.COVER_LARGE_TEXT_FONT + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.COVER_LARGE_TEXT + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.COVER_SIZE_LARGE_TEXT + TYPE_INT + COMMA_SEP
-
-                    + GiftSentContract.Entry.COVER_SMALL_TEXT + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.COVER_SMALL_TEXT_FONT + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.COVER_COLOR_SMALL_TEXT + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.COVER_SIZE_SMALL_TEXT + TYPE_TEXT + COMMA_SEP
-
-                    + GiftSentContract.Entry.INNER_AVATAR_ID + TYPE_INT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_BACKGROUND_ID + TYPE_INT + COMMA_SEP
-
-                    + GiftSentContract.Entry.INNER_COLOR_LARGE_TEXT + TYPE_INT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_LARGE_TEXT + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_SIZE_LARGE_TEXT + TYPE_INT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_LARGE_TEXT_FONT + TYPE_TEXT + COMMA_SEP
-
-                    + GiftSentContract.Entry.INNER_SMALL_TEXT + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_SMALL_TEXT_FONT + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_COLOR_SMALL_TEXT + TYPE_INT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_SIZE_SMALL_TEXT + TYPE_INT + COMMA_SEP
-
-                    + GiftSentContract.Entry.INNER_SONG_LYRICS + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_SONG_TITLE + TYPE_TEXT + COMMA_SEP
-                    + GiftSentContract.Entry.INNER_SONG_URLS + TYPE_TEXT
+                    + FriendContract.Entry.AVATAR_ID + TYPE_INT
                     + ");");
             // create table gift sent
-            db.execSQL("create table " + GiftReceivedContract.TABLE_NAME + " ("
-                    + GiftReceivedContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
-                    + GiftReceivedContract.Entry.GIFT_ID + TYPE_TEXT + COMMA_SEP
-                    + GiftReceivedContract.Entry.SENDER_ID + TYPE_TEXT + COMMA_SEP
-                    + GiftReceivedContract.Entry.DATETIME + TYPE_TEXT + COMMA_SEP
-                    + GiftReceivedContract.Entry.MESSAGE + TYPE_TEXT + COMMA_SEP
-                    + GiftReceivedContract.Entry.LOCATION + TYPE_TEXT + COMMA_SEP
-                    + GiftReceivedContract.Entry.IS_FINISHED + TYPE_INT +
+            db.execSQL("create table " + PostcardContract.TABLE_NAME + " ("
+                    + PostcardContract.Entry._ID + TYPE_INT + " primary key autoincrement, "
+                    + PostcardContract.Entry.POSTCARD_ID + TYPE_TEXT + COMMA_SEP
+                    + PostcardContract.Entry.SENDER_ID + TYPE_TEXT + COMMA_SEP
+                    + PostcardContract.Entry.RECEIVER_ID + TYPE_TEXT + COMMA_SEP
+                    + PostcardContract.Entry.JSON_POSTCARD + TYPE_TEXT +
                     ");");
 
             // create table notifications
@@ -374,6 +302,13 @@ public class DataProvider extends ContentProvider {
                     + NotificationContract.Entry.FRIEND_ID + TYPE_TEXT + COMMA_SEP
                     + NotificationContract.Entry.ENABLE + TYPE_INT + COMMA_SEP
                     + NotificationContract.Entry.MESSAGE + TYPE_TEXT + COMMA_SEP
+                    + NotificationContract.Entry.DAY + TYPE_INT + COMMA_SEP
+                    + NotificationContract.Entry.MONTH + TYPE_INT + COMMA_SEP
+                    + NotificationContract.Entry.AVATAR_ID + TYPE_INT
+                    + NotificationContract.Entry.YEAR + TYPE_INT + COMMA_SEP
+                    + NotificationContract.Entry.HOUR + TYPE_INT + COMMA_SEP
+                    + NotificationContract.Entry.MINUTE + TYPE_INT + COMMA_SEP
+                    + NotificationContract.Entry.SECOND + TYPE_INT + COMMA_SEP
                     + NotificationContract.Entry.TYPE + TYPE_TEXT
                     + ");");
         }

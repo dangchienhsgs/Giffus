@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +21,10 @@ public class AddLocationDialog extends DialogFragment {
 
 
     private CheckBox checkBoxSecret;
+
     private EditText editHint;
+    private EditText editAlternativeTitle;
+
     private GiftLocation location;
 
     private AddLocationListener mListener;
@@ -36,6 +38,8 @@ public class AddLocationDialog extends DialogFragment {
         // Set some init values for components of dialogs
         checkBoxSecret = (CheckBox) view.findViewById(R.id.check_box_keep_secret);
         editHint = (EditText) view.findViewById(R.id.edit_location_hint);
+        editAlternativeTitle = (EditText) view.findViewById(R.id.edit_alternative_title);
+
         editHint.setVisibility(View.INVISIBLE);
 
         checkBoxSecret.setChecked(false);
@@ -72,6 +76,14 @@ public class AddLocationDialog extends DialogFragment {
                         if (location == null) {
                             Toast.makeText(getActivity(), "You didn't choose any location", Toast.LENGTH_SHORT).show();
                         } else {
+
+                            location.setAlternativeTitle(editAlternativeTitle.getText().toString());
+                            if (checkBoxSecret.isChecked()) {
+                                location.setSecret(true);
+                                if (!editHint.getText().toString().isEmpty()) {
+                                    location.setHint(editHint.getText().toString());
+                                }
+                            }
                             mListener.onLocationAdded(location);
                         }
                     }
@@ -95,8 +107,13 @@ public class AddLocationDialog extends DialogFragment {
         }
     }
 
+    public void setLocation(GiftLocation location) {
+        this.location = location;
+    }
 
     public interface AddLocationListener {
         public void onLocationAdded(GiftLocation location);
     }
+
+
 }

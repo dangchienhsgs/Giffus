@@ -246,9 +246,10 @@
     -->
     <string name="palestine_display_name">Palestine</string>
     <string name="title_activity_cover_preview">CoverPreviewActivity</string>
-    <string name="title_activity_choose_friend">Choose Friend</string>
+    <string name="title_activity_choose_friend">s</string>
     <string name="title_activity_preview_inner">PreviewInnerActivity</string>
     <string name="title_activity_time_picker">TimePicker</string>
     <string name="title_activity_add_location">AddLocationActivity</string>
+    <string name="title_activity_pick_friend">PickFriendActivity</string>
 
 </resources>

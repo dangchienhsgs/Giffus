@@ -22,7 +22,7 @@ import java.util.zip.Inflater;
  */
 public class FriendCursorAdapter extends SimpleCursorAdapter {
 
-    private String TAG = "Friend Cursor ADapter";
+    private String TAG = "Friend Cursor Adapter";
 
     public FriendCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
         super(context, layout, c, from, to, flags);

@@ -9,7 +9,7 @@ public class Common {
     public static final String SERVER_LINK = "http://staticsurvey.herobo.com//service.php";
 
     public static final String GOOGLE_PROJECT_ID = "1054670780291";
-    public static final String GOOGLE_MAP_API_KEY = "AIzaSyBG2yUFfe5nxHjTrNg3iO3GsL3YDkY-AQ8";
+    public static final String GOOGLE_MAP_API_KEY = "AIzaSyAN-hB_Q-PJhzgTwqhg9tZamjz0Hl4XlqQ";
 
     public static final String REGISTER_ACITIVY = " my register";
     public static final String EXTRA_STATUS = "status";
@@ -35,6 +35,7 @@ public class Common {
     public static final String ACTION_ACCEPT_FRIEND_REQUEST = "accept_friendship";
     public static final String ACTION_GET_USER_INFO_BY_ATT = "get_user_info_by_att";
     public static final String ACTION_SEARCH_FRIEND_BY_NAME = "search_friend_by_name";
+    public static final String ACTION_SEND_POSTCARD = "send_postcard";
     public static final String NAME_SEARCH = "name";
 
     public static final String ACCEPT_USER = "accept_user";
@@ -45,6 +46,8 @@ public class Common {
     public static final String MESSAGE_ACTION = "action";
     public static final String ACTION_MESSAGE_ACCEPTED = "accepted_friendship";
 
+    public static final String JSON_GIFFUS_LOCATION = "json_giffus_location";
+
     public static final String ACTION_MESSAGE_INVITED = "invited";
     public static final String MESSAGE_REQUIRE_USER_ID = "require_user_id";
     public static final String MESSAGE_INVITED_USER_ID = "invited_user_id";
@@ -53,15 +56,17 @@ public class Common {
     public static final String ATTRIBUTE = "attribute";
     public static final String VALUE = "value";
 
-    public static final String ACCOUNT = "Giffus";
-    public static final String ACCOUNT_TYPE = "com.dangchienhsgs.giffus";
-
     public static final int STATUS_SUCCESS = 1;
     public static final int STATUS_FAIL = 0;
 
     public static final String ROBOTO_LIGHT_FONT_PATH = "/system/fonts/Roboto-Light.ttf";
 
-    public static final String JSON_GIFFUS_LOCATION = "json_giffus_location";
+    public static final String JSON_POSTCARD_STRING = "json_postcard_string";
+    public static final String JSON_COVER_STRING = "json_cover_string";
+
+    public static final String FLAG = "flag";
+    public static final String FLAG_OPEN_POSTCARD = "flag_open_postcard";
+    public static final String FLAG_PREVIEW_POSTCARD = "flag_preview_postcard";
 
     // This is the order of Drawer Navigation List
     public static final int DRAWER_NOTIFICATIONS_ID = 0;
@@ -70,11 +75,14 @@ public class Common {
     public static final int DRAWER_ACCOUNT_ID = 3;
     public static final int DRAWER_SIGN_OUT_ID = 4;
 
+    public static final int INDEX_SYNC_FRIEND = 0;
+    public static final int INDEX_SEARCH_FRIEND_BY_NAME = 1;
+
 
     public static final int[] HUMAN_ICON = {
             R.drawable.icon_baby, R.drawable.icon_nurse, R.drawable.icon_old,
             R.drawable.icon_professor, R.drawable.icon_spy,
-            R.drawable.icon_thief
+            R.drawable.icon_thief, R.drawable.icon_anonymous
     };
 
     public static final int[] COVER_BACKGROUND = {

@@ -5,12 +5,24 @@
 
     <item
         android:id="@+id/action_select_all"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="Select All"
-        app:showAsAction="always" />
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Select all"
+        android:orderInCategory="3"
+        app:actionViewClass="android.widget.CheckBox"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_search_friend"
+        android:title="Search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="2"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
+
     <item
         android:id="@+id/action_send"
         android:icon="@android:drawable/ic_menu_send"
+        android:orderInCategory="1"
         android:title="Send"
         app:showAsAction="always" />
 </menu>

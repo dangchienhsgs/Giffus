@@ -23,6 +23,7 @@ public class ServerUtilities {
     // Send data to server
     public static String postToServer(String endpoint, Map<String, String> params) {
         UrlBuilder urlBuilder = new UrlBuilder(endpoint);
+
         Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> param = iterator.next();

@@ -4,4 +4,8 @@
     android:layout_height="match_parent"
     tools:context="com.dangchienhsgs.giffus.ChooseFriendActivity">
 
+    <ListView
+        android:id="@+id/list_friend_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 </RelativeLayout>

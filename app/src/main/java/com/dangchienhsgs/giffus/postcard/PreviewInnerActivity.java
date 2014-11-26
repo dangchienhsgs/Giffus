@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
 import com.dangchienhsgs.giffus.dialogs.musicplayer.MusicPlayerDialogs;
@@ -27,8 +28,10 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
 
     private TextView txtLarge;
     private TextView txtSmall;
-
     private ImageView mAvatar;
+
+    private Postcard postcard;
+    private String flag;
 
     private boolean isDownloaded[];
 
@@ -41,11 +44,14 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
 
         setContentView(R.layout.activity_preview_inner);
 
-        // get innerString
-        String jsonInner = getIntent().getStringExtra(Inner.JSON_NAME);
+        Intent intent = getIntent();
+
+        String jsonPostcard = intent.getStringExtra(Common.JSON_POSTCARD_STRING);
+        postcard = new Gson().fromJson(jsonPostcard, Postcard.class);
+        flag = intent.getStringExtra(Common.FLAG);
+
         // convert to Inner
-        Gson gson = new Gson();
-        inner = gson.fromJson(jsonInner, Inner.class);
+        inner = postcard.getInner();
 
         isDownloaded = new boolean[inner.getListSongs().size()];
         Arrays.fill(isDownloaded, false);
@@ -90,16 +96,15 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
         int id = item.getItemId();
         switch (id) {
             case R.id.action_play_music:
-                MusicPlayerDialogs musicPlayerDialogs = new MusicPlayerDialogs();
-                Song song = new Song(
-                        "Chien",
-                        "http://dl2.org.mp3.zdn.vn/fsdd1131lwwjA/64c96742e3c3866a061019c660f80e3f/544d9910/2014/07/26/1/2/12bbb88ea519d8a68cd2724597c064eb.mp3?filename=Goi%20Mua%20-%20Trung%20Quan%20Idol.mp3",
-                        "Deo biet la gi nua"
-                );
-                inner.getListSongs().add(song);
-                musicPlayerDialogs.setListSongs(inner.getListSongs());
-                musicPlayerDialogs.setIsDownloaded(isDownloaded);
-                musicPlayerDialogs.show(getSupportFragmentManager(), "music_player");
+
+                if (inner.getListSongs().size() == 0) {
+                    Toast.makeText(this, "Sender do not attach any media ", Toast.LENGTH_SHORT).show();
+                } else {
+                    MusicPlayerDialogs musicPlayerDialogs = new MusicPlayerDialogs();
+                    musicPlayerDialogs.setListSongs(inner.getListSongs());
+                    musicPlayerDialogs.setIsDownloaded(isDownloaded);
+                    musicPlayerDialogs.show(getSupportFragmentManager(), "music_player");
+                }
                 break;
             //case R.id.action_next:
             //    Intent intent=new Intent(getApplicationContext(), TimePicker.class);

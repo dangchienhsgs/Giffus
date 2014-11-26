@@ -8,20 +8,7 @@
         android:id="@+id/location_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/image_add_location"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/image_add_location"
-        android:layout_toStartOf="@+id/image_add_location"
         android:gravity="center"
         android:text="Sample Text"
         android:textColor="@color/white" />
-
-    <ImageView
-        android:id="@+id/image_add_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/button_add_location" />
-
 </RelativeLayout>

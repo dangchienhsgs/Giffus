@@ -24,14 +24,13 @@ import com.dangchienhsgs.giffus.adapter.TabAdapter;
 import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.postcard.CreateCoverActivity;
 import com.dangchienhsgs.giffus.provider.FriendContract;
-import com.dangchienhsgs.giffus.provider.GiftReceivedContract;
-import com.dangchienhsgs.giffus.provider.GiftSentContract;
+import com.dangchienhsgs.giffus.provider.PostcardContract;
 import com.dangchienhsgs.giffus.provider.NotificationContract;
 import com.dangchienhsgs.giffus.utils.Common;
 
 
 public class HomeActivity extends ActionBarActivity implements ActionBar.TabListener {
-    public static final String TAG="Home Activity";
+    public static final String TAG = "Home Activity";
     private ViewPager viewPager;
     private TabAdapter tabAdapter;
     private ActionBar actionBar;
@@ -54,16 +53,16 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     protected void onResume() {
         super.onResume();
-        ListFragment listFragment=(ListFragment) tabAdapter.getItem(1);
-        SimpleCursorAdapter cursorAdapter=(SimpleCursorAdapter)listFragment.getListAdapter();
+        ListFragment listFragment = (ListFragment) tabAdapter.getItem(1);
+        SimpleCursorAdapter cursorAdapter = (SimpleCursorAdapter) listFragment.getListAdapter();
         Log.d(TAG, "Dang onResume");
-        if (cursorAdapter!=null){
+        if (cursorAdapter != null) {
             // We need update the friend list view in situation that
             // friends can be add from other activity
             // Update by update the cursor and notify the adapter
             Log.d(TAG, "Update FRIEND ADAPTER");
             // Get new cursor
-            Cursor cursor=getContentResolver().query(
+            Cursor cursor = getContentResolver().query(
                     FriendContract.URI,
                     null,
                     FriendContract.Entry.RELATIONSHIP + "=" + FriendContract.ALREADY_FRIEND,
@@ -134,7 +133,7 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
 
     // Create DrawerNavigation
     public void createNavigationDrawer() {
-        mDrawerTitle=mTitle=getTitle();
+        mDrawerTitle = mTitle = getTitle();
         mDrawerList = (ListView) findViewById(R.id.list_drawer);
 
         mDrawerListTitle = getResources().getStringArray(R.array.nav_drawer_items);
@@ -165,7 +164,6 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
     //Account account=new Account(Common.ACCOUNT, Common.ACCOUNT_TYPE);
     //AccountManager accountManager=(AccountManager) context.getSystemService()
     //}
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -244,8 +242,7 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
                 case Common.DRAWER_SIGN_OUT_ID:
                     ContentResolver contentResolver = getContentResolver();
                     contentResolver.delete(FriendContract.URI, null, null);
-                    contentResolver.delete(GiftSentContract.URI, null, null);
-                    contentResolver.delete(GiftReceivedContract.URI, null, null);
+                    contentResolver.delete(PostcardContract.URI, null, null);
                     contentResolver.delete(NotificationContract.URI, null, null);
                     PreferencesHandler.deleteFromPreferences(Common.USERNAME, getApplicationContext());
                     PreferencesHandler.deleteFromPreferences(Common.PASSWORD, getApplicationContext());

@@ -35,7 +35,7 @@ public class HumanArrayListAdapter extends ArrayAdapter<Human> {
         Human human = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.row_add_friends, parent, false);
+                    .inflate(R.layout.row_friend_picker, parent, false);
         }
         TextView textFullName = (TextView) convertView.findViewById(R.id.text_full_name);
         TextView textEmail = (TextView) convertView.findViewById(R.id.text_email);

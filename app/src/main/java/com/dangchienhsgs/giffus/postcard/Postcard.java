@@ -1,77 +1,38 @@
 package com.dangchienhsgs.giffus.postcard;
+
 import android.content.ContentValues;
 
 import com.dangchienhsgs.giffus.human.Human;
 import com.dangchienhsgs.giffus.map.GiftLocation;
 
+import java.util.List;
+
 public class Postcard {
-    private final String COMMA_SEP = ",";
+    private static final String COMMA_SEP = ",";
     private Cover cover;
     private Inner inner;
 
     private GiftLocation location;
-    private Human sender;
-    private Human receiver;
+    private String senderID;
+    private List<String> receiverID;
 
-    public ContentValues toContentValues() {
-        ContentValues values = new ContentValues();
+    private int year;
+    private int month;
+    private int day;
 
-        // SAVE COVER
-        values.put(Cover.BACKGROUND_ID, cover.getBackgroundID());
+    private int sentDay;
+    private int sentMonth;
+    private int sentYear;
 
-        values.put(Cover.COLOR_LARGE_TEXT, cover.getColorLargeText());
-        values.put(Cover.COLOR_SMALL_TEXT, cover.getColorSmallText());
+    private int sentHour;
+    private int sentMinute;
 
-        values.put(Cover.LARGE_TEXT, cover.getTextLarge());
-        values.put(Cover.SMALL_TEXT, cover.getTextSmall());
-
-        values.put(Cover.LARGE_TEXT_FONT, cover.getFontTextLarge());
-        values.put(Cover.SMALL_TEXT_FONT, cover.getFontTextSmall());
-
-        values.put(Cover.SIZE_SMALL_TEXT, cover.getSizeSmallText());
-        values.put(Cover.SIZE_LARGE_TEXT, cover.getSizeLargeText());
+    private boolean secretSender;
+    private String senderFullName;
 
 
-        // SAVE INNER
-        values.put(Inner.AVATAR_ID, inner.getAvatarID());
-        values.put(Inner.BACKGROUND_ID, inner.getBackgroundID());
-
-        values.put(Inner.LARGE_TEXT, inner.getTextLarge());
-        values.put(Inner.SMALL_TEXT, inner.getTextSmall());
-
-        values.put(Inner.LARGE_TEXT_FONT, inner.getFontTextLarge());
-        values.put(Inner.SMALL_TEXT_FONT, inner.getFontTextSmall());
-
-        values.put(Inner.COLOR_LARGE_TEXT, inner.getColorTextLarge());
-        values.put(Inner.COLOR_SMALL_TEXT, inner.getColorTextSmall());
-
-        values.put(Inner.SIZE_LARGE_TEXT, inner.getSizeTextLarge());
-        values.put(Inner.SIZE_SMALL_TEXT, inner.getSizeTextSmall());
-
-        // Put Songs and Path and Lyric
-        String listTitle = "";
-        String listUrl = "";
-        String listLyric = "";
-
-        for (int i = 0; i < inner.getListSongs().size(); i++) {
-            listTitle = inner.getListSongs().get(i).getTitle();
-            listUrl = inner.getListSongs().get(i).getUrl();
-            listLyric = inner.getListSongs().get(i).getUrl();
-
-            if (i < inner.getListSongs().size() - 1) {
-                listTitle = listTitle + COMMA_SEP;
-                listUrl = listUrl + COMMA_SEP;
-                listLyric = listLyric + COMMA_SEP;
-            }
-        }
-
-        values.put(Inner.SONG_LYRICS, listLyric);
-        values.put(Inner.SONG_TITLE, listTitle);
-        values.put(Inner.SONG_URLS, listUrl);
-
-
-        return values;
-    }
+    private int hour;
+    private int minute;
 
     public Cover getCover() {
         return cover;
@@ -89,19 +50,127 @@ public class Postcard {
         this.inner = inner;
     }
 
-    public Human getSender() {
-        return sender;
+    public String getCOMMA_SEP() {
+        return COMMA_SEP;
     }
 
-    public void setSender(Human sender) {
-        this.sender = sender;
+    public GiftLocation getLocation() {
+        return location;
     }
 
-    public Human getReceiver() {
-        return receiver;
+    public void setLocation(GiftLocation location) {
+        this.location = location;
     }
 
-    public void setReceiver(Human receiver) {
-        this.receiver = receiver;
+    public String getSenderID() {
+        return senderID;
+    }
+
+    public void setSenderID(String senderID) {
+        this.senderID = senderID;
+    }
+
+    public List<String> getReceiverID() {
+        return receiverID;
+    }
+
+    public void setReceiverID(List<String> receiverID) {
+        this.receiverID = receiverID;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
+    }
+
+    public boolean isSecretSender() {
+        return secretSender;
+    }
+
+    public void setSecretSender(boolean secretSender) {
+        this.secretSender = secretSender;
+    }
+
+    public String getSenderFullName() {
+        return senderFullName;
+    }
+
+    public void setSenderFullName(String senderFullName) {
+        this.senderFullName = senderFullName;
+    }
+
+    public int getSentDay() {
+        return sentDay;
+    }
+
+    public void setSentDay(int sentDay) {
+        this.sentDay = sentDay;
+    }
+
+    public int getSentMonth() {
+        return sentMonth;
+    }
+
+    public void setSentMonth(int sentMonth) {
+        this.sentMonth = sentMonth;
+    }
+
+    public int getSentYear() {
+        return sentYear;
+    }
+
+    public void setSentYear(int sentYear) {
+        this.sentYear = sentYear;
+    }
+
+    public int getSentHour() {
+        return sentHour;
+    }
+
+    public void setSentHour(int sentHour) {
+        this.sentHour = sentHour;
+    }
+
+    public int getSentMinute() {
+        return sentMinute;
+    }
+
+    public void setSentMinute(int sentMinute) {
+        this.sentMinute = sentMinute;
     }
 }

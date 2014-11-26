@@ -6,10 +6,12 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -22,11 +24,13 @@ import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.utils.ContentValuesBuilder;
+import com.dangchienhsgs.giffus.utils.UserHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,26 +77,7 @@ public class SearchByNameActivity extends ActionBarActivity {
     }
 
     public void onClickAdd(View view) {
-        for (int i = 0; i < listHuman.size(); i++) {
-            if (checkList[i]) {
-                Human human = listHuman.get(i);
-                Log.d(TAG, "Send friend request to " + human.getUsername());
-                ServerUtilities.sendRequestFriend(
-                        PreferencesHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext()),
-                        PreferencesHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext()),
-                        listHuman.get(i).getUsername()
-                );
-
-                // Create content values
-                ContentValues contentValues = ContentValuesBuilder.friendBuilder(human);
-                contentValues.put(FriendContract.Entry.RELATIONSHIP, FriendContract.IS_REQUESTING);
-
-                // Update to database
-                ContentResolver contentResolver = getContentResolver();
-                contentResolver.insert(FriendContract.URI, contentValues);
-
-            }
-        }
+        new SendFriendInviteTask().execute();
     }
 
     public List<Human> analyzeResults(String result) {
@@ -136,6 +121,55 @@ public class SearchByNameActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private class SendFriendInviteTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < listHuman.size(); i++) {
+                if (checkList[i]) {
+                    Human human = listHuman.get(i);
+                    Log.d(TAG, "Send friend request to " + human.getUsername());
+                    ServerUtilities.sendRequestFriend(
+                            PreferencesHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext()),
+                            PreferencesHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext()),
+                            listHuman.get(i).getUsername()
+                    );
+
+                    // Create content values
+                    ContentValues contentValues = ContentValuesBuilder.friendBuilder(human);
+                    contentValues.put(FriendContract.Entry.RELATIONSHIP, FriendContract.IS_REQUESTING);
+
+                    // Update to database
+                    ContentResolver contentResolver = getContentResolver();
+                    contentResolver.insert(FriendContract.URI, contentValues);
+
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            List<Boolean> listCheck = new ArrayList<Boolean>();
+            for (int i = 0; i < checkList.length; i++) {
+                listCheck.add(checkList[i]);
+            }
+
+
+            for (int i = 0; i < listHuman.size(); i++) {
+                if (listCheck.get(i)) {
+                    listHuman.remove(i);
+                    listCheck.remove(i);
+                }
+            }
+
+            mAdapter.notifyDataSetChanged();
+
+            Toast.makeText(getApplicationContext(), "Friend requests sent !", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private class SearchFriendTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... names) {
@@ -156,14 +190,22 @@ public class SearchByNameActivity extends ActionBarActivity {
 
             listHuman = analyzeResults(arrayJSON);
             if (listHuman == null) {
-                Log.d(TAG, "Something was error when parse ArrayJSON");
-                Toast.makeText(getApplicationContext(), "Content from server error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Found no one !", Toast.LENGTH_SHORT).show();
             } else {
+
+                // Remove friend we already friend
+
+                for (int i = 0; i < listHuman.size(); i++) {
+                    if (UserHandler.checkFriend(getApplicationContext(), listHuman.get(i).getUserID()) != FriendContract.NO_RELATION) {
+                        listHuman.remove(i);
+                    }
+                }
                 // Init some adapter and components
                 checkList = new Boolean[listHuman.size()];
+
                 mAdapter = new HumanArrayListAdapter(
                         getApplicationContext(),
-                        R.layout.row_add_friends,
+                        R.layout.row_friend_picker,
                         listHuman,
                         checkList,
                         false
@@ -172,10 +214,20 @@ public class SearchByNameActivity extends ActionBarActivity {
                 // Set Adapter
                 listView.setAdapter(mAdapter);
 
+                if (listHuman.size() == 0) {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "No one who have not been your friend named like " + editName.getText(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+
+
                 // Visible some Views
                 progressBar.setVisibility(View.INVISIBLE);
                 listView.setVisibility(View.VISIBLE);
                 buttonContinue.setVisibility(View.VISIBLE);
+
             }
         }
     }

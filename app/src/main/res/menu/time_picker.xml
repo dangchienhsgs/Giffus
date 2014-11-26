@@ -1,9 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.dangchienhsgs.giffus.postcard.TimePickerActivity">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/action_settings" />
+
+    <item
+        android:title="Next"
+        android:id="@+id/action_next"
+        android:icon="@drawable/ic_action_next_item"
+        app:showAsAction="always"/>
+
+
 </menu>

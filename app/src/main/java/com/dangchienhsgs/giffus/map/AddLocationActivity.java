@@ -10,12 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.postcard.CreateCoverActivity;
+import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.utils.URLContentHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,7 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AddLocationActivity extends Activity implements AdapterView.OnItemClickListener,
-        GoogleMap.OnMarkerClickListener, AddLocationDialog.AddLocationListener {
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, AddLocationDialog.AddLocationListener {
 
     private String TAG = "Add Location Activity";
 
@@ -41,7 +40,6 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
 
     private GoogleMap googleMap;
 
-    private Marker choosenMaker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +52,7 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
                 this,
                 android.R.layout.simple_list_item_1
         );
+
         searchBox.setAdapter(mAdapter);
         searchBox.setOnItemClickListener(this);
 
@@ -69,44 +68,13 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
             googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment))
                     .getMap();
 
-            googleMap.setOnMarkerClickListener(this);
-
+            googleMap.setOnInfoWindowClickListener(this);
             googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(final Marker marker) {
                     View view = getLayoutInflater().inflate(R.layout.layout_info_window_google_map, null);
-
                     TextView placeTitle = (TextView) view.findViewById(R.id.location_title);
                     placeTitle.setText(marker.getTitle());
-
-                    ImageView imageAdd = (ImageView) view.findViewById(R.id.image_add_location);
-
-                    // Set onClickListener for the maker add image
-                    // When the add-image be pressed, we choose the location
-
-                    imageAdd.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            choosenMaker = marker;
-
-                            // Save data to location
-                            GiftLocation location = new GiftLocation();
-                            location.setTitle(marker.getTitle());
-                            location.setLatitude(marker.getPosition().latitude);
-                            location.setLongitude(marker.getPosition().longitude);
-
-                            // Convert location to json string
-                            Gson gson = new Gson();
-                            String jsonLocation = gson.toJson(location, GiftLocation.class);
-
-                            // Create intent and set result
-                            Intent intent = new Intent();
-                            intent.putExtra(Common.JSON_GIFFUS_LOCATION, jsonLocation);
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
-                    });
-
                     return view;
                 }
 
@@ -149,18 +117,56 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
     }
 
     @Override
+    public void onInfoWindowClick(Marker marker) {
+
+        GiftLocation location = new GiftLocation();
+        location.setMapTitle(marker.getTitle());
+        location.setGoogleMapID(marker.getId());
+        location.setLatitude(marker.getPosition().latitude);
+        location.setLongitude(marker.getPosition().longitude);
+
+        AddLocationDialog addLocationDialog = new AddLocationDialog();
+        addLocationDialog.setLocation(location);
+
+        addLocationDialog.show(getFragmentManager(), "Set location properties");
+
+    }
+
+    @Override
     public boolean onMarkerClick(Marker marker) {
         if (marker.isInfoWindowShown()) {
             marker.hideInfoWindow();
+            return false;
         } else {
             marker.showInfoWindow();
+            return true;
         }
-        return true;
     }
 
     @Override
     public void onLocationAdded(GiftLocation location) {
         // Do something
+
+        Log.d(TAG, "Da clicked");
+
+        Toast.makeText(getApplicationContext(), "Clicked", Toast.LENGTH_SHORT).show();
+
+        // Save data to location
+
+        // Convert location to json string
+        Gson gson = new Gson();
+        String jsonLocation = gson.toJson(location, GiftLocation.class);
+
+        // Create intent and set result
+        Intent intent = new Intent();
+        intent.putExtra(Common.JSON_GIFFUS_LOCATION, jsonLocation);
+
+        PreferencesHandler.saveValueToPreferences(Common.JSON_GIFFUS_LOCATION, jsonLocation, this);
+
+        Log.d(TAG, jsonLocation);
+
+        setResult(RESULT_OK, intent);
+        AddLocationActivity.this.finish();
     }
 
     private class DownloadPlaceInformation extends AsyncTask<String, Void, LatLng> {

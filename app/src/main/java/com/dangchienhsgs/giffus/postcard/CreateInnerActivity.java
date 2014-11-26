@@ -27,6 +27,7 @@ import com.dangchienhsgs.giffus.dialogs.songpickers.SongsPickerDialogs;
 import com.dangchienhsgs.giffus.R;
 import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.dialogs.timepicker.TimePicker;
+import com.dangchienhsgs.giffus.map.GiftLocation;
 import com.dangchienhsgs.giffus.media.Song;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.google.gson.Gson;
@@ -47,6 +48,8 @@ public class CreateInnerActivity extends ActionBarActivity
     private Button playMedia;
 
     private Inner inner = new Inner();
+
+    private Postcard postcard;
 
     private ProgressBar progressBar;
 
@@ -69,14 +72,13 @@ public class CreateInnerActivity extends ActionBarActivity
         editLargeText = (EditText) findViewById(R.id.edit_text_large);
         editSmallText = (EditText) findViewById(R.id.edit_small_text);
 
+        String jsonPostcard = PreferencesHandler.getValueFromPreferences(Common.JSON_POSTCARD_STRING, this);
+        postcard = new Gson().fromJson(jsonPostcard, Postcard.class);
+
 
         inner.setFontTextLarge(Common.ROBOTO_LIGHT_FONT_PATH);
-        Log.d(TAG, inner.getFontTextLarge());
         inner.setFontTextSmall(Common.ROBOTO_LIGHT_FONT_PATH);
-        Log.d(TAG, inner.getFontTextSmall());
-
         inner.setBackgroundID(0);
-
 
         editSmallText.setTypeface(Typeface.createFromFile(Common.ROBOTO_LIGHT_FONT_PATH));
         editLargeText.setTypeface(Typeface.createFromFile(Common.ROBOTO_LIGHT_FONT_PATH));
@@ -91,7 +93,6 @@ public class CreateInnerActivity extends ActionBarActivity
         );
 
         avatarID = 0;
-
 
     }
 
@@ -112,60 +113,94 @@ public class CreateInnerActivity extends ActionBarActivity
 
         switch (id) {
             case R.id.action_next:
-                Intent intent = new Intent(getApplicationContext(), TimePickerActivity.class);
-                startActivity(intent);
+                actionNext();
                 break;
             case R.id.action_edit_text_color:
-                Log.d(TAG, "Edit Text Color");
-                ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
-                        this,
-                        Color.WHITE,
-                        new ColorPickerDialog.OnColorSelectedListener() {
-                            @Override
-                            public void onColorSelected(int color) {
-                                if (editSmallText.hasFocus()) {
-                                    editSmallText.setTextColor(color);
-                                } else if (editLargeText.hasFocus()) {
-                                    editLargeText.setTextColor(color);
-                                }
-                            }
-                        }
-                );
-                colorPickerDialog.show();
+                actionChangeTextColor();
                 break;
             case R.id.action_change_size:
-                NumberPickerBuilder numberPickerBuilder = new NumberPickerBuilder();
-                numberPickerBuilder.setFragmentManager(getSupportFragmentManager())
-                        .setStyleResId(R.style.BetterPickersDialogFragment_Light);
-                numberPickerBuilder.show();
+                actionChangeSize();
                 break;
             case R.id.action_change_font:
-                FontPickerDialog fontPickerDialog = new FontPickerDialog();
-                fontPickerDialog.show(getFragmentManager(), "font_picker");
+                actionChangeFont();
                 break;
-
             case R.id.action_preview:
-                intent = new Intent(getApplicationContext(), PreviewInnerActivity.class);
-
-                // get Inner
-                inner = obtainSetting();
-
-                // convert Inner to JSON
-                Gson gson = new Gson();
-                String jsonInner = gson.toJson(inner);
-                Log.d(TAG, "Inner json " + jsonInner);
-
-                // add jsonInner to intent
-                intent.putExtra(Inner.JSON_NAME, jsonInner);
-
-                // start Preview
-                startActivity(intent);
+                actionPreview();
                 break;
 
             case R.id.action_change_text_background:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void actionNext() {
+        Gson gson = new Gson();
+
+        // Save inner to postcard
+        String jsonPostcard = PreferencesHandler.getValueFromPreferences(Common.JSON_POSTCARD_STRING, this);
+        Postcard postcard = gson.fromJson(jsonPostcard, Postcard.class);
+        postcard.setInner(obtainInner());
+
+
+        // Save postcard to preferences
+        PreferencesHandler.saveValueToPreferences(
+                Common.JSON_POSTCARD_STRING,
+                gson.toJson(postcard, Postcard.class),
+                this
+        );
+
+
+        Intent intent = new Intent(getApplicationContext(), TimePickerActivity.class);
+        startActivity(intent);
+    }
+
+    public void actionChangeSize() {
+        NumberPickerBuilder numberPickerBuilder = new NumberPickerBuilder();
+        numberPickerBuilder.setFragmentManager(getSupportFragmentManager())
+                .setStyleResId(R.style.BetterPickersDialogFragment_Light);
+        numberPickerBuilder.show();
+    }
+
+    public void actionPreview() {
+        Intent intent = new Intent(getApplicationContext(), PreviewInnerActivity.class);
+
+        // get Inner
+        inner = obtainInner();
+        postcard.setInner(inner);
+
+        String jsonPostcard = new Gson().toJson(postcard, Postcard.class);
+        // add jsonInner to intent
+        intent.putExtra(Common.JSON_POSTCARD_STRING, jsonPostcard);
+        intent.putExtra(Common.FLAG, Common.FLAG_PREVIEW_POSTCARD);
+
+        // start Preview
+        startActivity(intent);
+
+    }
+
+    public void actionChangeTextColor() {
+        Log.d(TAG, "Edit Text Color");
+        ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
+                this,
+                Color.WHITE,
+                new ColorPickerDialog.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int color) {
+                        if (editSmallText.hasFocus()) {
+                            editSmallText.setTextColor(color);
+                        } else if (editLargeText.hasFocus()) {
+                            editLargeText.setTextColor(color);
+                        }
+                    }
+                }
+        );
+        colorPickerDialog.show();
+    }
+
+    public void actionChangeFont() {
+        FontPickerDialog fontPickerDialog = new FontPickerDialog();
+        fontPickerDialog.show(getFragmentManager(), "font_picker");
     }
 
     public void onAvatarClick(View view) {
@@ -209,7 +244,7 @@ public class CreateInnerActivity extends ActionBarActivity
         listSongs = songsPickerDialogs.getListSongs();
     }
 
-    public Inner obtainSetting() {
+    public Inner obtainInner() {
         inner.setAvatarID(avatarID);
         inner.setBackgroundID(0);
         inner.setListSongs(listSongs);

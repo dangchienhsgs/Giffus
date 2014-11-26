@@ -9,8 +9,49 @@
     tools:context="com.dangchienhsgs.giffus.postcard.TimePickerActivity">
 
     <TextView
+        android:id="@+id/text_title_choose_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="Choose time: " />
+
+
+    <EditText
+        android:id="@+id/edit_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/text_title_choose_time"
+        android:editable="false" />
+
+    <TextView
+        android:id="@+id/text_title_choose_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_time"
+        android:text="Choose date: " />
+
+    <EditText
+        android:id="@+id/edit_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/edit_time"
+        android:layout_toRightOf="@+id/text_title_choose_date"
+        android:editable="false" />
+
+    <TextView
+        android:id="@+id/text_secret_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_date"
+        android:text="Secret sender ?" />
+
+    <CheckBox
+        android:id="@+id/check_box_secret_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_date"
+        android:layout_toRightOf="@+id/text_secret_sender" />
 
 </RelativeLayout>

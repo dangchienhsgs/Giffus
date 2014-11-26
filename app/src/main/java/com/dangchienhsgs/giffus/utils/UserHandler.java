@@ -1,8 +1,12 @@
-package com.dangchienhsgs.giffus.human;
+package com.dangchienhsgs.giffus.utils;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.util.Log;
 
+import com.dangchienhsgs.giffus.client.PreferencesHandler;
+import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.utils.Common;
 
 import org.json.JSONException;
@@ -59,6 +63,44 @@ public class UserHandler {
         } catch (JSONException e) {
             Log.d(TAG, "JSON String is error in parsing");
             return false;
+        }
+    }
+
+    public static String getUserAttribute(Context context, String attribute) {
+        return PreferencesHandler.getValueFromPreferences(attribute, context);
+    }
+
+    public static String getFriendInfo(Context context, String selectionAttr, String value, String destinationAttr) {
+        Cursor cursor = context.getContentResolver().query(
+                FriendContract.URI,
+                null,
+                selectionAttr + "=" + value,
+                null,
+                null
+        );
+
+        if (cursor.getCount() == 0) {
+            return null;
+        } else {
+            cursor.moveToPosition(0);
+            return cursor.getString(cursor.getColumnIndex(destinationAttr));
+        }
+    }
+
+    public static int checkFriend(Context context, String friendID) {
+        Cursor cursor = context.getContentResolver().query(
+                FriendContract.URI,
+                null,
+                FriendContract.Entry.USER_ID + "=" + friendID,
+                null,
+                null
+        );
+
+        if (cursor.getCount() == 0) {
+            return FriendContract.NO_RELATION;
+        } else {
+            cursor.moveToPosition(0);
+            return Integer.parseInt(cursor.getString(cursor.getColumnIndex(FriendContract.Entry.RELATIONSHIP)));
         }
     }
 }

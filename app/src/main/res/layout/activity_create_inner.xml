@@ -78,15 +78,17 @@
         </HorizontalScrollView>
     </RelativeLayout>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_play_content"
         android:layout_width="wrap_content"
+
         android:layout_height="wrap_content"
         android:layout_above="@+id/progressBar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="38dp"
         android:onClick="onClickSetMusic"
+        android:src="@drawable/play"
         android:text="Set Music" />
 
 

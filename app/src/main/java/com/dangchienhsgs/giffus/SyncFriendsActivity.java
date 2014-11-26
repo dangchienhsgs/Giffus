@@ -163,7 +163,7 @@ public class SyncFriendsActivity extends ActionBarActivity {
             Arrays.fill(listCheck, true);
             mAdapter = new HumanArrayListAdapter(
                     getApplicationContext(),
-                    R.layout.row_add_friends,
+                    R.layout.row_friend_picker,
                     listHuman,
                     listCheck,
                     true
