@@ -16,8 +16,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.dangchienhsgs.giffus.provider.FriendContract;
+import com.dangchienhsgs.giffus.utils.ConnectionDetector;
 import com.dangchienhsgs.giffus.utils.UserHandler;
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
+import com.dangchienhsgs.giffus.utils.PreferencesHandler;
 import com.dangchienhsgs.giffus.provider.DataHelper;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
@@ -87,16 +89,20 @@ public class MainActivity extends ActionBarActivity {
 
     // onClick function to Button Sign in
     public void onClickSignIn(View v) {
-        username = edit_username.getText().toString().trim();
-        password = edit_password.getText().toString().trim();
+        if (new ConnectionDetector(this).isConnectingToInternet()) {
+            username = edit_username.getText().toString().trim();
+            password = edit_password.getText().toString().trim();
 
-        if (username.length() == 0 | password.length() == 0) {
-            Toast.makeText(getApplicationContext(), "Please complete your username and password !", Toast.LENGTH_SHORT).show();
+            if (username.length() == 0 | password.length() == 0) {
+                Toast.makeText(getApplicationContext(), "Please complete your username and password !", Toast.LENGTH_SHORT).show();
+            } else {
+                progressBar.setVisibility(View.VISIBLE);
+                String url = Common.SERVER_LINK + "?username=" +
+                        username + "&password=" + password + "&action=login";
+                new SignInTask(this, progressBar).execute(url);
+            }
         } else {
-            progressBar.setVisibility(View.VISIBLE);
-            String url = Common.SERVER_LINK + "?username=" +
-                    username + "&password=" + password + "&action=login";
-            new SignInTask(this, progressBar).execute(url);
+            Toast.makeText(this, "You have not any internet connection !", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -251,14 +257,31 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            DataHelper dataHelper = new DataHelper(getContentResolver());
+
             HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put(Common.USERNAME, username);
             hashMap.put(Common.PASSWORD, password);
             hashMap.put(Common.ACTION, Common.ACTION_GET_ALL_FRIENDS_INFO);
+            hashMap.put(Common.FRIEND_STATE, FriendContract.ALREADY_FRIEND + "");
+
             String friends = ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, hashMap);
-            Log.d(TAG, "Friends data: " + friends);
-            Log.d(TAG, "Is Updating friends");
-            boolean result = new DataHelper(getContentResolver()).updateAllFriendsData(friends);
+            Log.d(TAG, "Already friends data: " + friends);
+            dataHelper.updateAllFriendsData(friends, FriendContract.ALREADY_FRIEND);
+
+
+            hashMap.remove(Common.FRIEND_STATE);
+            hashMap.put(Common.FRIEND_STATE, FriendContract.IS_REQUESTING + "");
+            String requestingFriends = ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, hashMap);
+            Log.d(TAG, "Already friends data: " + requestingFriends);
+            dataHelper.updateAllFriendsData(requestingFriends, FriendContract.IS_REQUESTING);
+
+            hashMap.remove(Common.FRIEND_STATE);
+            hashMap.put(Common.FRIEND_STATE, FriendContract.WAIT_ACCEPTING + "");
+            String waitAcceptingFriends = ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, hashMap);
+            Log.d(TAG, "Already friends data: " + waitAcceptingFriends);
+            dataHelper.updateAllFriendsData(waitAcceptingFriends, FriendContract.WAIT_ACCEPTING);
+
             return null;
         }
 

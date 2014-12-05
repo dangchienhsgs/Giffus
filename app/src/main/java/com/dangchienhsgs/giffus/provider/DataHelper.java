@@ -17,7 +17,7 @@ public class DataHelper {
         this.contentResolver = contentResolver;
     }
 
-    public boolean updateAllFriendsData(String friends) {
+    public boolean updateAllFriendsData(String friends, int state) {
         try {
             JSONArray jsonArray = new JSONArray(friends);
             int length = jsonArray.length();
@@ -32,7 +32,7 @@ public class DataHelper {
                 contentValues.put(FriendContract.Entry.EMAIL, jsonObject.getString(FriendContract.Entry.EMAIL));
                 contentValues.put(FriendContract.Entry.MOBILE_PHONE, jsonObject.getString(FriendContract.Entry.MOBILE_PHONE));
                 contentValues.put(FriendContract.Entry.BIRTHDAY, jsonObject.getString(FriendContract.Entry.BIRTHDAY));
-                contentValues.put(FriendContract.Entry.RELATIONSHIP, FriendContract.ALREADY_FRIEND);
+                contentValues.put(FriendContract.Entry.RELATIONSHIP, state + "");
 
                 Log.d(TAG, "Insert " + contentValues.toString());
                 contentResolver.insert(FriendContract.URI, contentValues);

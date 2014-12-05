@@ -14,9 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.map.GiftLocation;
-import com.dangchienhsgs.giffus.utils.Common;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -30,7 +28,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
 
 
 public class LocationDialog extends DialogFragment
@@ -109,10 +106,12 @@ public class LocationDialog extends DialogFragment
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 if (Math.sqrt(Math.pow(location.getLatitude() - mCurrentLocation.getLatitude(), 2)
-                        + Math.pow(location.getLongitude() - mCurrentLocation.getLongitude(), 2)) < 0.004) {
-                    Toast.makeText(getActivity(), "Dung la dang o day", Toast.LENGTH_SHORT).show();
+                        + Math.pow(location.getLongitude() - mCurrentLocation.getLongitude(), 2)) < 0.007) {
+                    mListener.onReturnLocation(true);
+                    Toast.makeText(getActivity(), "Confirm successful", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity(), "Noi dieu", Toast.LENGTH_SHORT).show();
+                    mListener.onReturnLocation(false);
+                    Toast.makeText(getActivity(), "You are fail !", Toast.LENGTH_SHORT).show();
                 }
 
                 Log.d("Location Dialog", location.getLatitude() + " " + mCurrentLocation.getLatitude() + " " + location.getLongitude() + mCurrentLocation.getLongitude());
@@ -124,6 +123,7 @@ public class LocationDialog extends DialogFragment
         return builder.create();
 
     }
+
 
     @Override
     public void onDestroyView() {
@@ -152,6 +152,10 @@ public class LocationDialog extends DialogFragment
         super.onStart();
 
         mLocationClient.connect();
+    }
+
+    public void setListener(OnReturnLocationDialogListener mListener) {
+        this.mListener = mListener;
     }
 
     @Override

@@ -82,6 +82,8 @@ public class AddLocationDialog extends DialogFragment {
                                 location.setSecret(true);
                                 if (!editHint.getText().toString().isEmpty()) {
                                     location.setHint(editHint.getText().toString());
+                                } else {
+                                    location.setHint("");
                                 }
                             }
                             mListener.onLocationAdded(location);

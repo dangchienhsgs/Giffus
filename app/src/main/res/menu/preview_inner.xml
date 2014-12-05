@@ -9,7 +9,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_play_music"
-        android:icon="@android:drawable/ic_media_play"
+        android:icon="@drawable/play"
         android:title="Play Music"
         app:showAsAction="always" />
 </menu>

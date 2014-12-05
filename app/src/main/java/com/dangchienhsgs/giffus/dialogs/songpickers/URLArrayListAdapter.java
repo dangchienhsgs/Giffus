@@ -6,11 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.media.Song;
+import com.dangchienhsgs.giffus.map.Song;
 
 import java.util.List;
 

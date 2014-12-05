@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.dangchienhsgs.giffus.SearchFriendsActivity">
+    tools:context="com.dangchienhsgs.giffus.friend.SearchFriendsActivity">
 
 
     <RelativeLayout
@@ -50,6 +50,7 @@
             android:text="Sync all the friends in your contacts list" />
 
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
@@ -94,8 +95,6 @@
             android:text="Input an ordinary name and we will find them" />
 
     </RelativeLayout>
-
-
 
 
 </LinearLayout>

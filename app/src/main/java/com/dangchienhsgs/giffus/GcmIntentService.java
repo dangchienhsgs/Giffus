@@ -12,17 +12,18 @@ import android.database.Cursor;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.dangchienhsgs.giffus.human.Human;
+import com.dangchienhsgs.giffus.friend.FriendFragment;
+import com.dangchienhsgs.giffus.notification.NotifyActivity;
+import com.dangchienhsgs.giffus.utils.PreferencesHandler;
+import com.dangchienhsgs.giffus.friend.Human;
 import com.dangchienhsgs.giffus.postcard.Postcard;
-import com.dangchienhsgs.giffus.postcard.PreviewCoverActivity;
-import com.dangchienhsgs.giffus.postcard.PreviewInnerActivity;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.provider.NotificationContract;
 import com.dangchienhsgs.giffus.provider.PostcardContract;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.utils.ContentValuesBuilder;
-import com.dangchienhsgs.giffus.utils.UrlBuilder;
+import com.dangchienhsgs.giffus.utils.UserHandler;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -53,7 +54,7 @@ public class GcmIntentService extends IntentService {
 
         Notification.Builder mBuilder = new Notification.Builder(context)
                 .setAutoCancel(true)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.present)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(text);
 
@@ -63,14 +64,20 @@ public class GcmIntentService extends IntentService {
             PendingIntent pi;
             switch (typeNoti) {
                 case NotificationContract.TYPE_FRIEND_REQUEST:
-                    intent = new Intent(context, FriendRequestsActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent = new Intent(context, NotifyActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     pi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(pi);
                     break;
                 case NotificationContract.TYPE_RECEIVE_POST_CARD:
-                    intent = new Intent(context, HomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent = new Intent(context, NotifyActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    pi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(pi);
+                    break;
+                case NotificationContract.TYPE_RECEIVE_ACCEPT_FRIEND:
+                    intent = new Intent(context, NotifyActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     pi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(pi);
                     break;
@@ -91,13 +98,11 @@ public class GcmIntentService extends IntentService {
             String requireID = intent.getStringExtra(Common.MESSAGE_REQUIRE_USER_ID);
             onReceiveRequestFriend(requireID);
 
-        } else if (action.equals(Common.ACTION_MESSAGE_ACCEPTED)) {
+        } else if (action.equals(Common.ACTION_ACCEPTED_FRIENDSHIP)) {
             // Your request was been accepted
             String acceptedID = intent.getStringExtra(Common.MESSAGE_ACCEPTED_USER_ID);
             onReceivedAcceptFriend(acceptedID);
         } else if (action.equals(Common.ACTION_SEND_POSTCARD)) {
-
-            Log.d(TAG, intent.toString());
 
             String senderID = intent.getStringExtra(PostcardContract.Entry.SENDER_ID);
             String receiverID = intent.getStringExtra(PostcardContract.Entry.RECEIVER_ID);
@@ -105,7 +110,41 @@ public class GcmIntentService extends IntentService {
 
             Log.d(TAG, jsonPostcard);
             onReceivePostcard(jsonPostcard, senderID, receiverID);
+        } else if (action.equals(Common.ACTION_DECLINE_FRIENDSHIP)) {
+            String declinedID = intent.getStringExtra(Common.MESSAGE_DECLINED_USER_ID);
+            String requireID = intent.getStringExtra(Common.MESSAGE_REQUIRE_USER_ID);
+
+            if (requireID.equals(PreferencesHandler.getValueFromPreferences(Common.USER_ID, getApplicationContext()))) {
+                onReceiveDecline(declinedID);
+            }
+        } else if (action.equals(Common.ACTION_REMOVE_FRIENDSHIP)) {
+            String requestID = intent.getStringExtra(Common.MESSAGE_REQUEST_USER_ID);
+            String removedID = intent.getStringExtra(Common.MESSAGE_REMOVED_USER_ID);
+
+            if (removedID.equals(PreferencesHandler.getValueFromPreferences(Common.USER_ID, getApplicationContext()))) {
+                removeFriend(requestID);
+            }
         }
+    }
+
+    public void removeFriend(String requestID) {
+        Log.d(TAG, "On Decline Accept Friend");
+        ContentResolver contentResolver = getContentResolver();
+        contentResolver.delete(
+                FriendContract.URI,
+                FriendContract.Entry.USER_ID + "=" + "'" + requestID + "'",
+                null
+        );
+    }
+
+    public void onReceiveDecline(String declinedID) {
+        Log.d(TAG, "On Decline Accept Friend");
+        ContentResolver contentResolver = getContentResolver();
+        contentResolver.delete(
+                FriendContract.URI,
+                FriendContract.Entry.USER_ID + "=" + "'" + declinedID + "'",
+                null
+        );
     }
 
     public void onReceivePostcard(String jsonPostcard, String senderID, String receiverID) {
@@ -121,7 +160,7 @@ public class GcmIntentService extends IntentService {
         Cursor cursor = getContentResolver().query(
                 FriendContract.URI,
                 null,
-                FriendContract.Entry.USER_ID + "=" + senderID,
+                FriendContract.Entry.USER_ID + "=" + "'" + senderID + "'",
                 null,
                 null
         );
@@ -168,8 +207,9 @@ public class GcmIntentService extends IntentService {
 
         notificationValues.put(NotificationContract.Entry.FRIEND_ID, senderID);
         notificationValues.put(NotificationContract.Entry.ENABLE, true);
+        notificationValues.put(NotificationContract.Entry.TYPE, NotificationContract.TYPE_RECEIVE_POST_CARD);
         notificationValues.put(NotificationContract.Entry.MESSAGE, title);
-//        notificationValues.put(NotificationContract.Entry.YEAR, calendar.get(Calendar.YEAR));
+        notificationValues.put(NotificationContract.Entry.YEAR, calendar.get(Calendar.YEAR));
         notificationValues.put(NotificationContract.Entry.MONTH, calendar.get(Calendar.MONTH));
         notificationValues.put(NotificationContract.Entry.DAY, calendar.get(Calendar.DAY_OF_MONTH));
         notificationValues.put(NotificationContract.Entry.HOUR, calendar.get(Calendar.HOUR_OF_DAY));
@@ -212,11 +252,13 @@ public class GcmIntentService extends IntentService {
             ContentResolver contentResolver = getContentResolver();
 
             Calendar calendar = Calendar.getInstance();
-            notifyContentValues.put(NotificationContract.Entry.YEAR, calendar.get(calendar.YEAR));
+
             notifyContentValues.put(NotificationContract.Entry.MONTH, calendar.get(calendar.MONTH));
             notifyContentValues.put(NotificationContract.Entry.DAY, calendar.get(calendar.DAY_OF_MONTH));
             notifyContentValues.put(NotificationContract.Entry.HOUR, calendar.get(calendar.HOUR_OF_DAY));
+            notifyContentValues.put(NotificationContract.Entry.MINUTE, calendar.get(calendar.MINUTE));
             notifyContentValues.put(NotificationContract.Entry.SECOND, calendar.get(calendar.SECOND));
+            notifyContentValues.put(NotificationContract.Entry.YEAR, calendar.get(calendar.YEAR));
 
             notifyContentValues.put(NotificationContract.Entry.ENABLE, 1);
             notifyContentValues.put(NotificationContract.Entry.FRIEND_ID, friend.getUserID());
@@ -230,6 +272,7 @@ public class GcmIntentService extends IntentService {
             ContentValues friendContentValues = ContentValuesBuilder.friendBuilder(friend);
             friendContentValues.put(FriendContract.Entry.RELATIONSHIP, FriendContract.WAIT_ACCEPTING);
             contentResolver.insert(FriendContract.URI, friendContentValues);
+
 
         } catch (JSONException e) {
             Log.d(TAG, "Friend JSON cannot parsing");
@@ -245,8 +288,16 @@ public class GcmIntentService extends IntentService {
         contentResolver.update(
                 FriendContract.URI,
                 contentValues,
-                FriendContract.Entry.USER_ID + "=" + acceptID,
+                FriendContract.Entry.USER_ID + "=" + "'" + acceptID + "'",
                 null
+        );
+
+        sendNotification(
+                getApplicationContext(),
+                UserHandler.getFriendInfo(getApplicationContext(), FriendContract.Entry.USER_ID, acceptID, FriendContract.Entry.FULL_NAME)
+                        + " has been accept your friend request",
+                true,
+                NotificationContract.TYPE_RECEIVE_ACCEPT_FRIEND
         );
     }
 }

@@ -67,14 +67,8 @@ public class PicturesPickerDialogs extends DialogFragment {
         this.images = list;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnSelectedPicturesListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("The activity doesn't implements the OnSelectedPicturesListener");
-        }
+    public void setListener(OnSelectedPicturesListener mListener) {
+        this.mListener = mListener;
     }
 
     public interface OnSelectedPicturesListener {

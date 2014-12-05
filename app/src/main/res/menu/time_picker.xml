@@ -5,14 +5,14 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/action_settings" />
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
 
     <item
-        android:title="Next"
         android:id="@+id/action_next"
-        android:icon="@drawable/ic_action_next_item"
-        app:showAsAction="always"/>
+        android:icon="@drawable/next_icon"
+        android:title="Next"
+        app:showAsAction="always" />
 
 
 </menu>

@@ -5,16 +5,16 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/action_settings" />
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_show_location"
         android:icon="@drawable/map"
         android:title="Show map"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_next"
-        android:icon="@drawable/ic_action_next_item"
+        android:icon="@drawable/next_icon"
         android:title="View Inner"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

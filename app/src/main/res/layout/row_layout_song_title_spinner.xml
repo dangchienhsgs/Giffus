@@ -8,5 +8,6 @@
     <TextView
         android:id="@+id/text_spinner_item"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:gravity="center" />
 </LinearLayout>

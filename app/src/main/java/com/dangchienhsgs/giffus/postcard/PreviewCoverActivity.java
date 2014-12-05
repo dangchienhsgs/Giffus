@@ -1,12 +1,12 @@
 package com.dangchienhsgs.giffus.postcard;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.dialogs.alert.MyAlertDialog;
 import com.dangchienhsgs.giffus.dialogs.mapdialogs.LocationDialog;
 import com.dangchienhsgs.giffus.map.GiftLocation;
@@ -32,7 +31,7 @@ public class PreviewCoverActivity extends ActionBarActivity implements LocationD
     private Cover cover;
     private String flag;
 
-    private boolean isChecked;
+    private boolean isChecked = false;
 
     private String jsonPostcard;
 
@@ -54,6 +53,8 @@ public class PreviewCoverActivity extends ActionBarActivity implements LocationD
 
         Intent intent = getIntent();
         jsonPostcard = intent.getStringExtra(Common.JSON_POSTCARD_STRING);
+
+        Log.d(TAG, jsonPostcard);
         flag = intent.getStringExtra(Common.FLAG);
 
         postcard = new Gson().fromJson(jsonPostcard, Postcard.class);
@@ -64,7 +65,7 @@ public class PreviewCoverActivity extends ActionBarActivity implements LocationD
         textLarge = (TextView) findViewById(R.id.text_large_preview);
         textLarge.setText(cover.getTextLarge());
         textLarge.setTextColor(cover.getColorLargeText());
-        textLarge.setTextSize(cover.getSizeLargeText());
+        textLarge.setTextSize(TypedValue.COMPLEX_UNIT_PX, cover.getSizeLargeText());
         textLarge.setTypeface(Typeface.createFromFile(cover.getFontTextLarge()));
 
         // set Text Small
@@ -72,7 +73,7 @@ public class PreviewCoverActivity extends ActionBarActivity implements LocationD
         textSmall.setText(cover.getTextSmall());
         textSmall.setTypeface(Typeface.createFromFile(cover.getFontTextSmall()));
         textSmall.setTextColor(cover.getColorSmallText());
-        textSmall.setTextSize(cover.getSizeSmallText());
+        textSmall.setTextSize(TypedValue.COMPLEX_UNIT_PX, cover.getSizeSmallText());
 
         // setBackground
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.layout_cover_preview);
@@ -114,13 +115,14 @@ public class PreviewCoverActivity extends ActionBarActivity implements LocationD
             if (inner == null) {
                 Toast.makeText(this, "The inner have not been set", Toast.LENGTH_SHORT).show();
             } else {
-                if (isChecked) {
-
+                if (isChecked || postcard.getLocation() == null) {
+                    Intent intent = new Intent(this, PreviewInnerActivity.class);
+                    intent.putExtra(Common.JSON_POSTCARD_STRING, jsonPostcard);
+                    intent.putExtra(Common.FLAG, Common.FLAG_OPEN_POSTCARD);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "You have not come to this, please confirm by press map icon", Toast.LENGTH_SHORT).show();
                 }
-                Intent intent = new Intent(this, PreviewInnerActivity.class);
-                intent.putExtra(Common.JSON_POSTCARD_STRING, jsonPostcard);
-                intent.putExtra(Common.FLAG, Common.FLAG_OPEN_POSTCARD);
-                startActivity(intent);
             }
         } catch (NullPointerException e) {
             Toast.makeText(this, "The inner have not been set", Toast.LENGTH_SHORT).show();
@@ -128,14 +130,23 @@ public class PreviewCoverActivity extends ActionBarActivity implements LocationD
     }
 
     public void actionShowLocation() {
+        GiftLocation location = null;
+        boolean check = true;
         try {
-            GiftLocation location = postcard.getLocation();
-
+            location = postcard.getLocation();
+            if (location == null) {
+                check = false;
+            }
+        } catch (Exception e) {
+            check = false;
+        }
+        if (check) {
             LocationDialog locationDialog = new LocationDialog();
             locationDialog.setLocation(location);
+            locationDialog.setListener(this);
             locationDialog.show(getFragmentManager(), "Map Dialog");
 
-        } catch (NullPointerException e) {
+        } else {
             // Not contains any location
             MyAlertDialog dialog = new MyAlertDialog();
             dialog.setTextAlert(

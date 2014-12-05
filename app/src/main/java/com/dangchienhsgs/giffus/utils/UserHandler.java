@@ -5,9 +5,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
 import com.dangchienhsgs.giffus.provider.FriendContract;
-import com.dangchienhsgs.giffus.utils.Common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +72,7 @@ public class UserHandler {
         Cursor cursor = context.getContentResolver().query(
                 FriendContract.URI,
                 null,
-                selectionAttr + "=" + value,
+                selectionAttr + "=" + "'" + value + "'",
                 null,
                 null
         );
@@ -91,7 +89,7 @@ public class UserHandler {
         Cursor cursor = context.getContentResolver().query(
                 FriendContract.URI,
                 null,
-                FriendContract.Entry.USER_ID + "=" + friendID,
+                FriendContract.Entry.USER_ID + "=" + "'" + friendID + "'",
                 null,
                 null
         );

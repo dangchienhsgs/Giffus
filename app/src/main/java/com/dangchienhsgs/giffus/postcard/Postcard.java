@@ -1,8 +1,5 @@
 package com.dangchienhsgs.giffus.postcard;
 
-import android.content.ContentValues;
-
-import com.dangchienhsgs.giffus.human.Human;
 import com.dangchienhsgs.giffus.map.GiftLocation;
 
 import java.util.List;

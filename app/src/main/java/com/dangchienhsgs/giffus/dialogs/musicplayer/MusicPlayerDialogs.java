@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -18,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -27,15 +25,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.media.Song;
+import com.dangchienhsgs.giffus.map.Song;
 
 import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -54,7 +50,6 @@ public class MusicPlayerDialogs extends DialogFragment implements ImageButton.On
     private ImageButton buttonNext;
     private ProgressBar progressBar;
     private Spinner spinner;
-
 
     private OnReturnedListener mListener;
 
@@ -108,7 +103,8 @@ public class MusicPlayerDialogs extends DialogFragment implements ImageButton.On
         }
         mAdapter = new ArrayAdapter<String>(
                 getActivity(),
-                android.R.layout.simple_dropdown_item_1line,
+                R.layout.row_spinner_songs,
+                R.id.text_title,
                 listTitle
         );
         spinner.setAdapter(mAdapter);
@@ -125,7 +121,7 @@ public class MusicPlayerDialogs extends DialogFragment implements ImageButton.On
 
                 if (!isDownloaded[currentPosition]) {
                     // If the song have not been downloaded
-                    buttonPlay.setImageResource(R.drawable.ic_action_download);
+                    buttonPlay.setImageResource(R.drawable.download);
                 } else {
                     if (isPlaying[currentPosition]) {
                         buttonPlay.setImageResource(R.drawable.ic_action_pause);
@@ -173,7 +169,9 @@ public class MusicPlayerDialogs extends DialogFragment implements ImageButton.On
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 getDialog().cancel();
-                mListener.onReturned(listSongPath, isDownloaded);
+                mPlayer.stop();
+                Arrays.fill(isPlaying, false);
+                mListener.onReturned(listSongPath, isDownloaded, listSongPath);
             }
         });
 
@@ -188,6 +186,10 @@ public class MusicPlayerDialogs extends DialogFragment implements ImageButton.On
 
     public void setIsDownloaded(boolean[] isDownloaded) {
         this.isDownloaded = isDownloaded;
+    }
+
+    public void setListSongPath(String[] listSongPath) {
+        this.listSongPath = listSongPath;
     }
 
     @Override
@@ -247,7 +249,7 @@ public class MusicPlayerDialogs extends DialogFragment implements ImageButton.On
     }
 
     public interface OnReturnedListener {
-        public void onReturned(String listSingPath[], boolean isDownloaded[]);
+        public void onReturned(String listSingPath[], boolean isDownloaded[], String filePath[]);
     }
 
     /**

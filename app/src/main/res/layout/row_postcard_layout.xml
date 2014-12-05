@@ -10,7 +10,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
-        android:onClick=""
         android:scaleType="fitStart"
         android:src="@drawable/ic_launcher" />
 

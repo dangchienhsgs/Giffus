@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.media.Song;
+import com.dangchienhsgs.giffus.map.Song;
 
 import java.util.ArrayList;
 import java.util.List;

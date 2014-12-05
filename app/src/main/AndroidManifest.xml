@@ -25,7 +25,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.dangchienhsgs.giffus.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -62,19 +63,16 @@
             android:name="com.dangchienhsgs.giffus.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name="com.dangchienhsgs.giffus.FriendRequestsActivity"
-            android:label="@string/title_activity_friend_requests" />
-        <activity
-            android:name="com.dangchienhsgs.giffus.NotifyActivity"
+            android:name=".notification.NotifyActivity"
             android:label="@string/title_activity_notify" />
         <activity
-            android:name="com.dangchienhsgs.giffus.SearchFriendsActivity"
+            android:name=".friend.SearchFriendsActivity"
             android:label="@string/title_activity_search_friends" />
         <activity
-            android:name="com.dangchienhsgs.giffus.SyncFriendsActivity"
+            android:name=".friend.SyncFriendsActivity"
             android:label="@string/title_activity_sync_friends" />
         <activity
-            android:name="com.dangchienhsgs.giffus.SearchByNameActivity"
+            android:name=".friend.SearchByNameActivity"
             android:label="@string/title_activity_search_by_name" />
         <activity
             android:name="com.dangchienhsgs.giffus.postcard.CreateCoverActivity"
@@ -93,6 +91,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"
@@ -114,6 +113,13 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyD_vww7VAyDI5IPjPTNFJE3cWCmiv98vOs" />
+
+        <activity
+            android:name="com.dangchienhsgs.giffus.AccountActivity"
+            android:label="@string/title_activity_account"></activity>
+        <activity
+            android:name="com.dangchienhsgs.giffus.FriendInfoActivity"
+            android:label="@string/title_activity_friend_info"></activity>
     </application>
 
 </manifest>

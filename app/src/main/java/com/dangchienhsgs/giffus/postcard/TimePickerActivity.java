@@ -1,7 +1,5 @@
 package com.dangchienhsgs.giffus.postcard;
 
-import android.app.Activity;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -12,12 +10,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
+import com.dangchienhsgs.giffus.utils.PreferencesHandler;
 import com.dangchienhsgs.giffus.dialogs.datepickers.DatePickerBuilder;
 import com.dangchienhsgs.giffus.dialogs.datepickers.DatePickerDialogFragment;
 import com.dangchienhsgs.giffus.dialogs.timepicker.TimePickerBuilder;
 import com.dangchienhsgs.giffus.dialogs.timepicker.TimePickerDialogFragment;
-import com.dangchienhsgs.giffus.map.GiftLocation;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.google.gson.Gson;
 
@@ -133,9 +130,6 @@ public class TimePickerActivity extends ActionBarActivity
 
     }
 
-    public void obtainDatetime() {
-
-    }
 
     @Override
     public void onClick(View view) {

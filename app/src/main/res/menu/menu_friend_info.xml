@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.dangchienhsgs.giffus.FriendInfoActivity">
+
+
+    <item
+        android:id="@+id/action_remove"
+        android:icon="@drawable/recyclebin"
+        android:title="Remove this friend"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_accept_friend"
+        android:icon="@drawable/add"
+        android:title="Accept this people"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_decline_friend"
+        android:icon="@drawable/decline"
+        android:title="Decline this request"
+        app:showAsAction="always" />
+
+
+</menu>

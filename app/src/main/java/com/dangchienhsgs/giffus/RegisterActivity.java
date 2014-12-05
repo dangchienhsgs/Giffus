@@ -19,8 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.dangchienhsgs.giffus.dialogs.datepickers.DatePickerBuilder;
+import com.dangchienhsgs.giffus.dialogs.datepickers.DatePickerDialogFragment;
+import com.dangchienhsgs.giffus.dialogs.picturepickers.PicturesPickerDialogs;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
+import com.dangchienhsgs.giffus.utils.EmailValidator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +33,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class RegisterActivity extends ActionBarActivity {
+public class RegisterActivity extends ActionBarActivity implements DatePickerDialogFragment.DatePickerDialogHandler,
+        PicturesPickerDialogs.OnSelectedPicturesListener {
     private String TAG = "Register Acitivy";
 
     private Button registerButton;
@@ -38,12 +43,12 @@ public class RegisterActivity extends ActionBarActivity {
     private EditText editEmail;
     private EditText editPassword;
     private EditText editPhoneNumber;
+    private EditText editBirthday;
     private ProgressBar progressBar;
 
-    private HorizontalScrollView scrollView;
     private ImageView avatar;
 
-    private String fullname, username, email, phoneNumber, password, user_id;
+    private String fullname, username, email, phoneNumber, password, user_id, birthday;
     private int avatar_id;
 
     @Override
@@ -51,19 +56,49 @@ public class RegisterActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        initComponents();
+    }
+
+    public void initComponents() {
         registerButton = (Button) findViewById(R.id.button_register);
         editFullName = (EditText) findViewById(R.id.edit_fullname);
         editUsername = (EditText) findViewById(R.id.edit_username);
         editEmail = (EditText) findViewById(R.id.edit_email);
         editPhoneNumber = (EditText) findViewById(R.id.edit_phone);
         editPassword = (EditText) findViewById(R.id.edit_password);
+        editBirthday = (EditText) findViewById(R.id.edit_birth);
+        editBirthday.setText("19/11/1994");
+
+        birthday = "19/11/1994";
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
-        scrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
         avatar = (ImageView) findViewById(R.id.avatar);
         avatar.setImageResource(Common.HUMAN_ICON[0]);
         avatar_id = 0;
-        createGallery();
+
+        editBirthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String birthday = editBirthday.getText().toString();
+                String values[] = birthday.replace("/", " ").trim().split(" ");
+
+                DatePickerBuilder builder = new DatePickerBuilder();
+                builder.setStyleResId(R.style.BetterPickersDialogFragment_Light)
+                        .setFragmentManager(getSupportFragmentManager());
+                builder.show();
+            }
+        });
+
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PicturesPickerDialogs dialogs = new PicturesPickerDialogs();
+                dialogs.setListener(RegisterActivity.this);
+                dialogs.setListImages(Common.HUMAN_ICON);
+                dialogs.show(getSupportFragmentManager(), "Picture Dialog");
+            }
+        });
     }
 
     public void onClick(View view) {
@@ -74,12 +109,13 @@ public class RegisterActivity extends ActionBarActivity {
         email = editEmail.getText().toString().trim();
         phoneNumber = editPhoneNumber.getText().toString().trim();
         password = editPassword.getText().toString().trim();
+        birthday = editBirthday.getText().toString();
 
         boolean check = true;
 
         // Check empty
         if (fullname.isEmpty() | username.isEmpty() |
-                email.isEmpty() | phoneNumber.isEmpty() | password.isEmpty()) {
+                email.isEmpty() | phoneNumber.isEmpty() | password.isEmpty() | birthday.isEmpty()) {
             check = false;
             Toast.makeText(getApplicationContext(), "Something is empty", Toast.LENGTH_SHORT).show();
         }
@@ -103,6 +139,7 @@ public class RegisterActivity extends ActionBarActivity {
             data.put(Common.USER_ID, user_id);
             data.put(Common.ACTION, Common.ACTION_SIGN_UP);
             data.put(Common.AVATAR_ID, String.valueOf(avatar_id));
+            data.put(Common.BIRTHDAY, birthday);
 
             progressBar.setVisibility(View.VISIBLE);
             new RegisterBackgroundTask(data, progressBar, getApplicationContext()).execute();
@@ -129,42 +166,16 @@ public class RegisterActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void createGallery() {
+    @Override
+    public void onDialogDateSet(int reference, int year, int monthOfYear, int dayOfMonth) {
+        birthday = dayOfMonth + "/" + monthOfYear + "/" + year;
+        editBirthday.setText(birthday);
+    }
 
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_list_avatar);
-
-        final int[] images = Common.HUMAN_ICON;
-
-        for (int i = 0; i < images.length; i++) {
-            Log.d(TAG, "CREATE " + i);
-            View item = getLayoutInflater().inflate(R.layout.avatar_list_item, null);
-            final ImageView imageView = (ImageView) item.findViewById(R.id._image);
-            imageView.setImageResource(images[i]);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            imageView.setTag(i);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    avatar_id = (Integer) view.getTag();
-                    avatar.setImageResource(images[avatar_id]);
-                    scrollView.setVisibility(View.INVISIBLE);
-                }
-            });
-            linearLayout.addView(item);
-        }
-        scrollView.setVisibility(View.INVISIBLE);
-
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (scrollView.getVisibility() == View.INVISIBLE) {
-                    scrollView.setVisibility(View.VISIBLE);
-                } else if (scrollView.getVisibility() == View.VISIBLE) {
-                    scrollView.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
+    @Override
+    public void onSelectedPictures(PicturesPickerDialogs dialogs, int position) {
+        avatar_id = position;
+        avatar.setImageResource(Common.HUMAN_ICON[avatar_id]);
     }
 
     class RegisterBackgroundTask extends AsyncTask<Void, Void, Void> {
@@ -188,47 +199,10 @@ public class RegisterActivity extends ActionBarActivity {
         protected void onPostExecute(Void aVoid) {
             progressBar.setVisibility(View.INVISIBLE);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            SharedPreferences.Editor editor = prefs.edit();
-
-            editor.putString(Common.EMAIL, email);
-            editor.putString(Common.USERNAME, username);
-            editor.putString(Common.PASSWORD, password);
-            editor.putString(Common.FULL_NAME, fullname);
-            editor.putString(Common.MOBILE_PHONE, phoneNumber);
-            editor.commit();
-
             startActivity(intent);
-        }
-    }
 
-    /**
-     * Check email validation by Regular Expression
-     */
-    public class EmailValidator {
-
-        private static final String EMAIL_PATTERN =
-                "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        private Pattern pattern;
-        private Matcher matcher;
-
-        public EmailValidator() {
-            pattern = Pattern.compile(EMAIL_PATTERN);
-        }
-
-        /**
-         * Validate hex with regular expression
-         *
-         * @param hex hex for validation
-         * @return true valid hex, false invalid hex
-         */
-        public boolean validate(final String hex) {
-
-            matcher = pattern.matcher(hex);
-            return matcher.matches();
-
+            // Finish this activity
+            finish();
         }
     }
 

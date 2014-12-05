@@ -2,45 +2,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dangchienhsgs.giffus.SyncFriendsActivity">
+    tools:context="com.dangchienhsgs.giffus.friend.SyncFriendsActivity">
 
     <TextView
+        android:id="@+id/text_descriptions"
         android:layout_width="fill_parent"
         android:layout_height="30dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Choose friends to invite"
-        android:id="@+id/text_descriptions"
-        android:layout_alignParentTop="true"
-        android:gravity="center"
         android:layout_alignLeft="@+id/list_friend_to_add"
-        android:layout_alignStart="@+id/list_friend_to_add" />
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/list_friend_to_add"
+        android:gravity="center"
+        android:text="Choose friends to invite"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <ListView        
+    <ListView
         android:id="@+id/list_friend_to_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button_send"
-        android:layout_below="@+id/text_descriptions">
-    </ListView>
+        android:layout_below="@+id/text_descriptions"></ListView>
 
     <Button
+        android:id="@+id/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send"
-        android:onClick="onClickSendFriendRequest"
-        android:id="@+id/button_send"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickSendFriendRequest"
+        android:text="Send" />
 
     <ProgressBar
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="97dp" />
-
 
 
 </RelativeLayout>

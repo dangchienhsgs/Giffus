@@ -5,17 +5,17 @@
 
     <item
         android:id="@+id/action_edit_text_color"
-        android:icon="@drawable/rainbow"
+        android:icon="@drawable/color"
         android:title="Edit"
         app:showAsAction="always" />
     <item
         android:id="@+id/change_background"
-        android:icon="@android:drawable/ic_menu_gallery"
+        android:icon="@drawable/picture"
         android:title="Change background"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_next"
-        android:icon="@drawable/ic_action_next_item"
+        android:icon="@drawable/next_icon"
         android:title="Continue"
         app:showAsAction="always" />
     <item
@@ -26,8 +26,7 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:icon="@drawable/settings"
-        android:title="@string/action_settings"
+        android:title="More"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_change_font"
@@ -48,7 +47,7 @@
     <item
         android:id="@+id/action_remove_location"
         android:title="Remove location"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
 
 </menu>

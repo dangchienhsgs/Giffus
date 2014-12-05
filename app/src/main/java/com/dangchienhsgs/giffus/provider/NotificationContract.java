@@ -8,6 +8,7 @@ public class NotificationContract implements DataContract {
 
     public static final int TYPE_FRIEND_REQUEST = 0;
     public static final int TYPE_RECEIVE_POST_CARD = 1;
+    public static final int TYPE_RECEIVE_ACCEPT_FRIEND = 2;
 
     public class Entry {
         public static final String _ID = "_id";

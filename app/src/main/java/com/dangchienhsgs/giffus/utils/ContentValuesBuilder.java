@@ -3,7 +3,7 @@ package com.dangchienhsgs.giffus.utils;
 import android.content.ContentValues;
 import android.util.Log;
 
-import com.dangchienhsgs.giffus.human.Human;
+import com.dangchienhsgs.giffus.friend.Human;
 import com.dangchienhsgs.giffus.postcard.Postcard;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.provider.PostcardContract;

@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.dialogs.colorpickers.ColorPickerDialog;
-import com.dangchienhsgs.giffus.dialogs.fontpickers.FontManager;
 import com.dangchienhsgs.giffus.dialogs.fontpickers.FontPickerDialog;
 import com.dangchienhsgs.giffus.dialogs.numberpickers.NumberPickerBuilder;
 import com.dangchienhsgs.giffus.dialogs.numberpickers.NumberPickerDialogFragment;
@@ -25,14 +25,16 @@ import com.dangchienhsgs.giffus.dialogs.picturepickers.PicturesPickerDialogs;
 import com.dangchienhsgs.giffus.dialogs.songpickers.LyricsPickerDialogs;
 import com.dangchienhsgs.giffus.dialogs.songpickers.SongsPickerDialogs;
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
-import com.dangchienhsgs.giffus.dialogs.timepicker.TimePicker;
-import com.dangchienhsgs.giffus.map.GiftLocation;
-import com.dangchienhsgs.giffus.media.Song;
+import com.dangchienhsgs.giffus.utils.PreferencesHandler;
+import com.dangchienhsgs.giffus.map.Song;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -55,6 +57,8 @@ public class CreateInnerActivity extends ActionBarActivity
 
     private List<Song> listSongs = new ArrayList<Song>();
 
+    private int backgroundLargeText = -1;
+    private int backgroundSmallText = 0;
 
     private int avatarID;
 
@@ -69,39 +73,108 @@ public class CreateInnerActivity extends ActionBarActivity
 
         setContentView(R.layout.activity_create_inner);
 
-        editLargeText = (EditText) findViewById(R.id.edit_text_large);
-        editSmallText = (EditText) findViewById(R.id.edit_small_text);
-
         String jsonPostcard = PreferencesHandler.getValueFromPreferences(Common.JSON_POSTCARD_STRING, this);
         postcard = new Gson().fromJson(jsonPostcard, Postcard.class);
 
+        Log.d(TAG, jsonPostcard);
 
-        inner.setFontTextLarge(Common.ROBOTO_LIGHT_FONT_PATH);
-        inner.setFontTextSmall(Common.ROBOTO_LIGHT_FONT_PATH);
-        inner.setBackgroundID(0);
+        if (postcard.getInner() == null) {
+            initComponents();
+        } else {
+            inner = postcard.getInner();
+            initComponentsByInner(postcard.getInner());
+        }
+
+    }
+
+    public void initComponents() {
+        editLargeText = (EditText) findViewById(R.id.edit_text_large);
+        editSmallText = (EditText) findViewById(R.id.edit_small_text);
 
         editSmallText.setTypeface(Typeface.createFromFile(Common.ROBOTO_LIGHT_FONT_PATH));
         editLargeText.setTypeface(Typeface.createFromFile(Common.ROBOTO_LIGHT_FONT_PATH));
 
+
+        inner.setFontTextLarge(Common.ROBOTO_LIGHT_FONT_PATH);
+        inner.setFontTextSmall(Common.ROBOTO_LIGHT_FONT_PATH);
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
-
 
         avatar = (ImageView) findViewById(R.id.avatar);
         avatar.setImageResource(
                 Common.HUMAN_ICON[Integer.parseInt(PreferencesHandler.getValueFromPreferences(Common.AVATAR_ID, getApplicationContext()))]
         );
 
-        avatarID = 0;
+        inner.setBackgroundID(0);
 
+        if (inner.getBackgroundTextLarge() >= 0) {
+            editLargeText.setBackgroundResource(Common.BUBBLE_TEXT_BACKGROUND[inner.getBackgroundTextLarge()]);
+        }
+
+        if (inner.getBackgroundTextSmall() >= 0) {
+            editSmallText.setBackgroundResource(Common.BUBBLE_TEXT_BACKGROUND[inner.getBackgroundTextSmall()]);
+        }
+
+        avatarID = Integer.parseInt(PreferencesHandler.getValueFromPreferences(Common.AVATAR_ID, getApplicationContext()));
+
+        backgroundSmallText = inner.getBackgroundTextSmall();
+        backgroundLargeText = inner.getBackgroundTextLarge();
     }
 
+    public void initComponentsByInner(Inner inner) {
+        editLargeText = (EditText) findViewById(R.id.edit_text_large);
+        editSmallText = (EditText) findViewById(R.id.edit_small_text);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        avatar = (ImageView) findViewById(R.id.avatar);
+
+        editLargeText.setText(inner.getTextLarge());
+        editLargeText.setTextColor(inner.getColorTextLarge());
+        editLargeText.setTextSize(TypedValue.COMPLEX_UNIT_PX, inner.getSizeTextLarge());
+        editLargeText.setTypeface(Typeface.createFromFile(inner.getFontTextLarge()));
+
+        if (inner.getBackgroundTextLarge() >= 0) {
+            editLargeText.setBackgroundResource(Common.BUBBLE_TEXT_BACKGROUND[inner.getBackgroundTextLarge()]);
+        }
+
+        if (inner.getBackgroundTextSmall() >= 0) {
+            editSmallText.setBackgroundResource(Common.BUBBLE_TEXT_BACKGROUND[inner.getBackgroundTextSmall()]);
+        }
+
+        editSmallText.setText(inner.getTextSmall());
+        editSmallText.setTextColor(inner.getColorTextSmall());
+        editSmallText.setTextSize(TypedValue.COMPLEX_UNIT_PX, inner.getSizeTextSmall());
+        editSmallText.setTypeface(Typeface.createFromFile(inner.getFontTextSmall()));
+
+        this.inner = inner;
+
+        avatar.setImageResource(Common.HUMAN_ICON[inner.getAvatarID()]);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.create_inner, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        // Pack data
+        Gson gson = new Gson();
+        String jsonPostcard = PreferencesHandler.getValueFromPreferences(Common.JSON_POSTCARD_STRING, this);
+        Postcard postcard = gson.fromJson(jsonPostcard, Postcard.class);
+        postcard.setInner(obtainInner());
+
+        Intent intent = new Intent(getApplicationContext(), CreateCoverActivity.class);
+        intent.putExtra(Common.FLAG, Common.FLAG_BACK_TO_COVER);
+        PreferencesHandler.saveValueToPreferences(Common.JSON_POSTCARD_STRING, gson.toJson(postcard, Postcard.class), this);
+
+        startActivity(intent);
+
+        finish();
     }
 
     @Override
@@ -129,9 +202,31 @@ public class CreateInnerActivity extends ActionBarActivity
                 break;
 
             case R.id.action_change_text_background:
+                actionChangeTextBackground();
+                break;
+            case R.id.action_save_draft:
+                actionSaveDraft();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void actionChangeTextBackground() {
+        PicturesPickerDialogs dialogs = new PicturesPickerDialogs();
+        dialogs.setListImages(Common.BUBBLE_TEXT_BACKGROUND);
+        dialogs.setListener(new PicturesPickerDialogs.OnSelectedPicturesListener() {
+            @Override
+            public void onSelectedPictures(PicturesPickerDialogs dialogs, int position) {
+                if (editLargeText.hasFocus()) {
+                    editLargeText.setBackgroundResource(Common.BUBBLE_TEXT_BACKGROUND[position]);
+                    backgroundLargeText = position;
+                } else if (editSmallText.hasFocus()) {
+                    editSmallText.setBackgroundResource(Common.BUBBLE_TEXT_BACKGROUND[position]);
+                    backgroundSmallText = position;
+                }
+            }
+        });
+        dialogs.show(getSupportFragmentManager(), "Background Picker");
     }
 
     public void actionNext() {
@@ -203,9 +298,47 @@ public class CreateInnerActivity extends ActionBarActivity
         fontPickerDialog.show(getFragmentManager(), "font_picker");
     }
 
+
+    public void actionSaveDraft() {
+        inner = obtainInner();
+        postcard.setInner(inner);
+
+        String arrayJSONDraft = PreferencesHandler.getValueFromPreferences(Common.ARRAY_POSTCARD_DRAFT, getApplicationContext());
+        String jsonPostcard = new Gson().toJson(postcard, Postcard.class);
+
+        Log.d("Chien", arrayJSONDraft);
+
+        if (arrayJSONDraft == null) {
+            JSONArray jsonArray = new JSONArray();
+
+            jsonArray.put(jsonPostcard);
+            arrayJSONDraft = jsonArray.toString();
+
+            PreferencesHandler.saveValueToPreferences(Common.ARRAY_POSTCARD_DRAFT, arrayJSONDraft, getApplicationContext());
+        } else {
+
+            JSONArray jsonArray = null;
+            try {
+                jsonArray = new JSONArray(arrayJSONDraft);
+            } catch (JSONException e) {
+                Log.d(TAG, arrayJSONDraft);
+                jsonArray = new JSONArray();
+            }
+
+            jsonArray.put(jsonPostcard);
+            arrayJSONDraft = jsonArray.toString();
+
+            PreferencesHandler.saveValueToPreferences(Common.ARRAY_POSTCARD_DRAFT, arrayJSONDraft, getApplicationContext());
+        }
+
+        Toast.makeText(this, "Save to draft successful !", Toast.LENGTH_SHORT).show();
+    }
+
+
     public void onAvatarClick(View view) {
-        PicturesPickerDialogs picturesPickerDialogs = new PicturesPickerDialogs();
+        final PicturesPickerDialogs picturesPickerDialogs = new PicturesPickerDialogs();
         picturesPickerDialogs.setListImages(Common.HUMAN_ICON);
+        picturesPickerDialogs.setListener(this);
         picturesPickerDialogs.show(getSupportFragmentManager(), "pictures_dialogs");
     }
 
@@ -213,8 +346,6 @@ public class CreateInnerActivity extends ActionBarActivity
     public void onFontSelected(FontPickerDialog dialog) {
         Typeface font = Typeface.createFromFile(dialog.getSelectedFont());
         if (editLargeText.hasFocus()) {
-            // Change font and save data
-            Log.d(TAG, "Large");
             editLargeText.setTypeface(font);
             inner.setFontTextLarge(dialog.getSelectedFont());
 
@@ -229,9 +360,9 @@ public class CreateInnerActivity extends ActionBarActivity
     public void onDialogNumberSet(int reference, int number, double decimal, boolean isNegative, double fullNumber) {
         if (number > 0) {
             if (editLargeText.hasFocus()) {
-                editLargeText.setTextSize(number);
+                editLargeText.setTextSize(TypedValue.COMPLEX_UNIT_PX, number);
             } else if (editSmallText.hasFocus()) {
-                editSmallText.setTextSize(number);
+                editSmallText.setTextSize(TypedValue.COMPLEX_UNIT_PX, number);
             }
         } else {
             Toast.makeText(getApplicationContext(), "Number input <0 fail", Toast.LENGTH_SHORT).show();
@@ -251,14 +382,25 @@ public class CreateInnerActivity extends ActionBarActivity
 
         inner.setColorTextLarge(editLargeText.getCurrentTextColor());
         inner.setSizeTextLarge(editLargeText.getTextSize());
-        inner.setTextLarge(editLargeText.getText().toString());
 
-        inner.setTextSmall(editSmallText.getText().toString());
+        try {
+            inner.setTextLarge(editLargeText.getText().toString());
+        } catch (NullPointerException e) {
+            inner.setTextLarge("");
+        }
+
+        try {
+            inner.setTextSmall(editSmallText.getText().toString());
+        } catch (NullPointerException e) {
+            inner.setTextSmall("");
+        }
+
         inner.setColorTextSmall(editSmallText.getCurrentTextColor());
         inner.setSizeTextSmall(editSmallText.getTextSize());
 
-        Log.d(TAG, inner.getTextSmall());
-        Log.d(TAG, inner.getFontTextLarge());
+        inner.setBackgroundTextLarge(backgroundLargeText);
+        inner.setBackgroundTextSmall(backgroundSmallText);
+
         return inner;
     }
 
@@ -266,6 +408,8 @@ public class CreateInnerActivity extends ActionBarActivity
         SongsPickerDialogs dialogs = new SongsPickerDialogs();
         dialogs.show(getSupportFragmentManager(), "add_music");
         dialogs.setListSongs(listSongs);
+        dialogs.setListSpinnerTitle(Arrays.asList(Common.SONGS_TITLE));
+        dialogs.setListSpinnerUrl(Arrays.asList(Common.SONGS_URL));
     }
 
     public void onClickSetLyrics(View view) {

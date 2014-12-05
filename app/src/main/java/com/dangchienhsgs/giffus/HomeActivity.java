@@ -5,23 +5,22 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.dangchienhsgs.giffus.adapter.DrawerAdapter;
-import com.dangchienhsgs.giffus.adapter.TabAdapter;
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
+import com.dangchienhsgs.giffus.friend.FriendCursorAdapter;
+import com.dangchienhsgs.giffus.friend.FriendFragment;
+import com.dangchienhsgs.giffus.friend.SearchFriendsActivity;
+import com.dangchienhsgs.giffus.notification.NotifyActivity;
+import com.dangchienhsgs.giffus.utils.PreferencesHandler;
 import com.dangchienhsgs.giffus.postcard.CreateCoverActivity;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.provider.PostcardContract;
@@ -43,9 +42,6 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mTitle;
 
-    private String username;
-    private String password;
-    private String registrationId;
 
     // Title of Tabs
     private String tabsName[] = {"Home", "Friend", "Library"};
@@ -53,27 +49,31 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     protected void onResume() {
         super.onResume();
-        ListFragment listFragment = (ListFragment) tabAdapter.getItem(1);
-        SimpleCursorAdapter cursorAdapter = (SimpleCursorAdapter) listFragment.getListAdapter();
-        Log.d(TAG, "Dang onResume");
+
+        FriendFragment listFragment = (FriendFragment) tabAdapter.getItem(1);
+        FriendCursorAdapter cursorAdapter = (FriendCursorAdapter) listFragment.getListAdapter();
+
+
+        // Update the Friend Fragment
+
         if (cursorAdapter != null) {
-            // We need update the friend list view in situation that
-            // friends can be add from other activity
-            // Update by update the cursor and notify the adapter
-            Log.d(TAG, "Update FRIEND ADAPTER");
-            // Get new cursor
+
             Cursor cursor = getContentResolver().query(
                     FriendContract.URI,
                     null,
-                    FriendContract.Entry.RELATIONSHIP + "=" + FriendContract.ALREADY_FRIEND,
+                    null,
                     null,
                     null
             );
-            // update cursor
+
             cursorAdapter.swapCursor(cursor);
-            // notify the friend listview
             cursorAdapter.notifyDataSetChanged();
+
+            // Update Listener
+            listFragment.getListView().setOnItemClickListener(listFragment);
         }
+
+
     }
 
     @Override
@@ -83,10 +83,6 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
 
         createTabs();
         createNavigationDrawer();
-
-        username = PreferencesHandler.getValueFromPreferences(Common.USERNAME, getApplicationContext());
-        password = PreferencesHandler.getValueFromPreferences(Common.PASSWORD, getApplicationContext());
-        registrationId = PreferencesHandler.getValueFromPreferences(Common.REGISTRATION_ID, getApplicationContext());
 
     }
 
@@ -137,8 +133,7 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
         mDrawerList = (ListView) findViewById(R.id.list_drawer);
 
         mDrawerListTitle = getResources().getStringArray(R.array.nav_drawer_items);
-        Log.d(TAG, "So luong la " + mDrawerListTitle.length);
-        DrawerAdapter drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_item, mDrawerListTitle);
+        DrawerArrayAdapter drawerAdapter = new DrawerArrayAdapter(this, R.layout.drawer_list_item, mDrawerListTitle);
         mDrawerList.setAdapter(drawerAdapter);
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -179,12 +174,12 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
         int id = item.getItemId();
         switch (id) {
             case R.id.action_search_friend:
-                Log.d(TAG, "Search Friend");
                 Intent intent = new Intent(getApplicationContext(), SearchFriendsActivity.class);
                 startActivity(intent);
                 break;
             case R.id.action_add_gift:
                 Intent intent2 = new Intent(getApplicationContext(), CreateCoverActivity.class);
+                intent2.putExtra(Common.FLAG, Common.FLAG_NEW_COVER);
                 startActivity(intent2);
                 break;
         }
@@ -208,10 +203,6 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
 
     }
 
-    public void onClickAddFriend(View view) {
-
-    }
-
     /**
      * This class handle the Item of ListView in Drawer Navigation action click
      * It point to subroutine selectItem (int position) where position is the
@@ -225,20 +216,16 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
             Intent intent;
             switch (position) {
                 // Do action here
-                case 0:
+                case Common.DRAWER_NOTIFICATIONS_ID:
                     //Start Notify Activity
                     intent = new Intent(getApplicationContext(), NotifyActivity.class);
                     startActivity(intent);
                     break;
-                case 1:
-                    // Start friend Request Activity
-                    intent = new Intent(getApplicationContext(), FriendRequestsActivity.class);
+                case Common.DRAWER_ACCOUNT_ID:
+                    intent = new Intent(getApplicationContext(), AccountActivity.class);
                     startActivity(intent);
                     break;
-                case 2:
-                    //Intent intent=new Intent(getApplicationContext(), SettingsActivity.class);
-                    //startActivity(intent);
-                    break;
+
                 case Common.DRAWER_SIGN_OUT_ID:
                     ContentResolver contentResolver = getContentResolver();
                     contentResolver.delete(FriendContract.URI, null, null);
@@ -249,6 +236,7 @@ public class HomeActivity extends ActionBarActivity implements ActionBar.TabList
                     intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     finish();
+                    break;
             }
         }
 

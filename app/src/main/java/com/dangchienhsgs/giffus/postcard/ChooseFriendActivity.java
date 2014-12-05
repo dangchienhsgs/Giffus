@@ -20,8 +20,8 @@ import android.widget.ListView;
 
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.adapter.HumanCursorListAdapter;
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
+import com.dangchienhsgs.giffus.friend.HumanCursorListAdapter;
+import com.dangchienhsgs.giffus.utils.PreferencesHandler;
 import com.dangchienhsgs.giffus.utils.UserHandler;
 import com.dangchienhsgs.giffus.provider.FriendContract;
 import com.dangchienhsgs.giffus.provider.PostcardContract;
@@ -55,7 +55,7 @@ public class ChooseFriendActivity extends ActionBarActivity implements SearchVie
 
     };
     private int[] TO_FIELDS = new int[]{
-            R.id.friend_full_name
+            R.id.text_descriptions
     };
 
     @Override
@@ -247,20 +247,26 @@ public class ChooseFriendActivity extends ActionBarActivity implements SearchVie
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+            ChooseFriendActivity.this.finish();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
+            String jsonPostcard = new Gson().toJson(postcard, Postcard.class);
+
             for (int i = 0; i < postcard.getReceiverID().size(); i++) {
-                String jsonPostcard = new Gson().toJson(postcard, Postcard.class);
+                Log.d(TAG, jsonPostcard);
+
                 Map<String, String> map = new HashMap<String, String>();
                 map.put(PostcardContract.Entry.SENDER_ID, postcard.getSenderID());
                 map.put(PostcardContract.Entry.RECEIVER_ID, postcard.getReceiverID().get(i));
                 map.put(PostcardContract.Entry.JSON_POSTCARD, jsonPostcard);
                 map.put(Common.ACTION, Common.ACTION_SEND_POSTCARD);
 
-                ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, map);
+
+                String response = ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, map);
+
+                Log.d(TAG, response);
             }
             return null;
         }

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
-import com.dangchienhsgs.giffus.client.PreferencesHandler;
+import com.dangchienhsgs.giffus.utils.PreferencesHandler;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.utils.URLContentHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;

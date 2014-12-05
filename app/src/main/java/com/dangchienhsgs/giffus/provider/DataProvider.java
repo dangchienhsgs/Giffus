@@ -304,12 +304,12 @@ public class DataProvider extends ContentProvider {
                     + NotificationContract.Entry.MESSAGE + TYPE_TEXT + COMMA_SEP
                     + NotificationContract.Entry.DAY + TYPE_INT + COMMA_SEP
                     + NotificationContract.Entry.MONTH + TYPE_INT + COMMA_SEP
-                    + NotificationContract.Entry.AVATAR_ID + TYPE_INT
+                    + NotificationContract.Entry.AVATAR_ID + TYPE_INT + COMMA_SEP
                     + NotificationContract.Entry.YEAR + TYPE_INT + COMMA_SEP
                     + NotificationContract.Entry.HOUR + TYPE_INT + COMMA_SEP
                     + NotificationContract.Entry.MINUTE + TYPE_INT + COMMA_SEP
                     + NotificationContract.Entry.SECOND + TYPE_INT + COMMA_SEP
-                    + NotificationContract.Entry.TYPE + TYPE_TEXT
+                    + NotificationContract.Entry.TYPE + TYPE_INT
                     + ");");
         }
 

@@ -1,30 +1,13 @@
 package com.dangchienhsgs.giffus.postcard;
 
-import com.dangchienhsgs.giffus.media.Song;
+import com.dangchienhsgs.giffus.map.Song;
 
 import java.util.List;
 
 
 public class Inner {
-    public static final String NAME = "inner";
 
-    public static final String JSON_NAME = "json_inner";
-    public static final String BACKGROUND_ID = "background";
     public static final String AVATAR_ID = "avatar_id";
-
-    public static final String SMALL_TEXT = "inner_small_text";
-    public static final String COLOR_SMALL_TEXT = "inner_color_small_text";
-    public static final String SIZE_SMALL_TEXT = "inner_size_small_text";
-    public static final String SMALL_TEXT_FONT = "inner_small_text_font";
-
-    public static final String LARGE_TEXT = "inner_large_text";
-    public static final String COLOR_LARGE_TEXT = "inner_color_large_text";
-    public static final String SIZE_LARGE_TEXT = "inner_size_large_text";
-    public static final String LARGE_TEXT_FONT = "inner_large_text_font";
-
-    public static final String SONG_URLS = "song_urls";
-    public static final String SONG_LYRICS = "song_lyrics";
-    public static final String SONG_TITLE = "song_titles";
 
     private int backgroundID;
     private int avatarID;
@@ -33,13 +16,22 @@ public class Inner {
     private int colorTextLarge;
     private float sizeTextLarge;
     private String fontTextLarge;
+    private int backgroundTextLarge;
 
 
     private String textSmall;
     private int colorTextSmall;
     private float sizeTextSmall;
     private String fontTextSmall;
+    private int backgroundTextSmall;
+
+
     private List<Song> listSongs;
+
+    public Inner() {
+        backgroundTextLarge = -1;
+        backgroundTextSmall = 0;
+    }
 
     public String getFontTextLarge() {
         return fontTextLarge;
@@ -128,5 +120,21 @@ public class Inner {
     public void setListSongs(List<Song> listSongs) {
 
         this.listSongs = listSongs;
+    }
+
+    public int getBackgroundTextLarge() {
+        return backgroundTextLarge;
+    }
+
+    public void setBackgroundTextLarge(int backgroundTextLarge) {
+        this.backgroundTextLarge = backgroundTextLarge;
+    }
+
+    public int getBackgroundTextSmall() {
+        return backgroundTextSmall;
+    }
+
+    public void setBackgroundTextSmall(int backgroundTextSmall) {
+        this.backgroundTextSmall = backgroundTextSmall;
     }
 }

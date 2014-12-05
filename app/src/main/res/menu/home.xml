@@ -12,7 +12,7 @@
     />
     <item
         android:id="@+id/action_search_friend"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/search_friend"
         android:title="Search Friends"
         app:showAsAction="ifRoom" />
     <item

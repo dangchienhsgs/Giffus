@@ -4,34 +4,34 @@
     tools:context="com.dangchienhsgs.giffus.postcard.CreateInnerActivity">
 
     <item
-        android:id="@+id/action_change_background"
-        android:icon="@android:drawable/ic_menu_gallery"
+        android:id="@+id/action_change_text_background"
+        android:icon="@drawable/picture"
         android:title="Edit Background"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_edit_text_color"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/color"
         android:title="Edit"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_next"
-        android:icon="@drawable/ic_action_next_item"
+        android:icon="@drawable/next_icon"
         android:title="Continue"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_preview"
-        android:icon="@drawable/action_preview_icon"
+        android:icon="@drawable/eye"
         android:title="Preview"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Setting"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_change_size"
-        android:icon="@drawable/font_size_icon"
+        android:icon="@drawable/typography"
         android:title="Change Font Size"
         app:showAsAction="ifRoom" />
     <item
@@ -40,9 +40,8 @@
         android:title="Change Font Type"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_change_text_background"
-        android:icon="@android:drawable/ic_menu_edit"
-        android:title="Change Text Background"
+        android:id="@+id/action_save_draft"
+        android:title="Save to draft"
         app:showAsAction="ifRoom" />
 
 </menu>

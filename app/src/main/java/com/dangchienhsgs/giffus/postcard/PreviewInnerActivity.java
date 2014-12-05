@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -14,8 +15,6 @@ import android.widget.Toast;
 
 import com.dangchienhsgs.giffus.R;
 import com.dangchienhsgs.giffus.dialogs.musicplayer.MusicPlayerDialogs;
-import com.dangchienhsgs.giffus.dialogs.timepicker.TimePicker;
-import com.dangchienhsgs.giffus.media.Song;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.google.gson.Gson;
 
@@ -34,6 +33,7 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
     private String flag;
 
     private boolean isDownloaded[];
+    private String filePath[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +50,15 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
         postcard = new Gson().fromJson(jsonPostcard, Postcard.class);
         flag = intent.getStringExtra(Common.FLAG);
 
+
         // convert to Inner
         inner = postcard.getInner();
 
         isDownloaded = new boolean[inner.getListSongs().size()];
         Arrays.fill(isDownloaded, false);
+
+        filePath = new String[inner.getListSongs().size()];
+        Arrays.fill(filePath, null);
 
         txtLarge = (TextView) findViewById(R.id.text_large_preview);
         txtSmall = (TextView) findViewById(R.id.text_small_preview);
@@ -62,17 +66,23 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
         //set Text Large
         txtLarge.setText(inner.getTextLarge());
         txtLarge.setTextColor(inner.getColorTextLarge());
-        txtLarge.setTextSize(inner.getSizeTextLarge());
+        txtLarge.setTextSize(TypedValue.COMPLEX_UNIT_PX, inner.getSizeTextLarge());
 
-        Log.d(TAG, inner.getFontTextLarge());
+        if (inner.getBackgroundTextLarge() >= 0) {
+            txtLarge.setBackgroundResource(Common.BUBBLE_TEXT_BACKGROUND[inner.getBackgroundTextLarge()]);
+        }
+
         txtLarge.setTypeface(Typeface.createFromFile(inner.getFontTextLarge()));
 
-        // set Text Small
-        Log.d(TAG, inner.getTextSmall());
+
         txtSmall.setText(inner.getTextSmall());
         txtSmall.setTypeface(Typeface.createFromFile(inner.getFontTextSmall()));
         txtSmall.setTextColor(inner.getColorTextSmall());
-        txtSmall.setTextSize(inner.getSizeTextSmall());
+        txtSmall.setTextSize(TypedValue.COMPLEX_UNIT_PX, inner.getSizeTextSmall());
+
+        if (inner.getBackgroundTextSmall() >= 0) {
+            txtSmall.setBackgroundResource(Common.BUBBLE_TEXT_BACKGROUND[inner.getBackgroundTextSmall()]);
+        }
 
         // Set Avatar
         mAvatar = (ImageView) findViewById(R.id.avatar_preview);
@@ -103,6 +113,7 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
                     MusicPlayerDialogs musicPlayerDialogs = new MusicPlayerDialogs();
                     musicPlayerDialogs.setListSongs(inner.getListSongs());
                     musicPlayerDialogs.setIsDownloaded(isDownloaded);
+                    musicPlayerDialogs.setListSongPath(filePath);
                     musicPlayerDialogs.show(getSupportFragmentManager(), "music_player");
                 }
                 break;
@@ -114,7 +125,8 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
     }
 
     @Override
-    public void onReturned(String[] listSingPath, boolean[] isDownloaded) {
+    public void onReturned(String[] listSingPath, boolean[] isDownloaded, String[] filePath) {
         this.isDownloaded = isDownloaded;
+        this.filePath = filePath;
     }
 }

@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="50dp"
-    android:background="@drawable/nav_item_selector">
+    android:layout_height="40dp"
+    android:background="#e7e8e9">
 
     <ImageView
         android:id="@+id/icon_list_drawer"
@@ -16,6 +16,7 @@
         android:id="@+id/text_list_drawer"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/icon_list_drawer"
         android:layout_toLeftOf="@+id/icon"
         android:layout_toRightOf="@+id/icon_list_drawer"
@@ -23,5 +24,7 @@
         android:minHeight="?attr/listPreferredItemHeightSmall"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:textColor="#fff" />
+        android:text="Notifications"
+        android:textColor="@color/dark_gray"
+        android:textSize="15dp" />
 </RelativeLayout>
