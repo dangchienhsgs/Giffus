@@ -116,6 +116,14 @@ public class SyncFriendsActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Intent intent=new Intent(this, SearchFriendsActivity.class);
+        startActivity(intent);
+
+        finish();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.sync_friends, menu);

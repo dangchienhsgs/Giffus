@@ -180,6 +180,7 @@ public class CreateCoverActivity extends ActionBarActivity implements FontPicker
                 break;
             case R.id.action_next:
                 actionNext();
+
                 break;
             case R.id.action_edit_text_color:
                 actionChangeColor();
@@ -218,7 +219,7 @@ public class CreateCoverActivity extends ActionBarActivity implements FontPicker
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.pull_in_right, R.anim.pull_out_left);
+
     }
 
     public Cover obtainCover() {

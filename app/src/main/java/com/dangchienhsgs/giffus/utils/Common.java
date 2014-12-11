@@ -41,6 +41,7 @@ public class Common {
     public static final String ACTION_DECLINE_FRIENDSHIP = "decline_friendship";
     public static final String ACTION_SIGN_UP = "sign_up";
     public static final String ACTION_REMOVE_FRIENDSHIP = "remove_friendship";
+    public static final String ACTION_CHECK_USERNAME_AND_EMAIL="check_username_and_email";
 
 
     public static final String NAME_SEARCH = "name";
@@ -118,15 +119,23 @@ public class Common {
     };
 
     public static final int[] COVER_BACKGROUND = {
+            R.drawable.background4,
             R.drawable.background_beach,
             R.drawable.background_autumn,
             R.drawable.background_sun,
             R.drawable.background_tailor,
             R.drawable.background3,
-            R.drawable.background4,
             R.drawable.background5,
-            R.drawable.danbo1, R.drawable.danbo2, R.drawable.danbo3, R.drawable.danbo4,
-            R.drawable.danbo5, R.drawable.danbo6, R.drawable.danbo7
+            R.drawable.background6,
+            R.drawable.background7,
+            R.drawable.background8,
+            R.drawable.background9,
+            R.drawable.background10,
+            R.drawable.background11,
+            R.drawable.background12,
+            R.drawable.background13,
+            R.drawable.background14,
+            R.drawable.background15,
     };
 
     public static final String[] SONGS_TITLE = {
@@ -136,7 +145,7 @@ public class Common {
     };
     public static final String[] SONGS_URL = {
             "http://dl2.org.mp3.zdn.vn/fsdd1131lwwjA/b981d2f62e20f68592b540cc5a79e827/54772050/2014/08/27/1/f/1f1520f809b15cbe73c9f823b8a79cde.mp3?filename=Gat%20Di%20Nuoc%20Mat%20-%20Noo%20Phuoc%20Thinh%20Tonny%20Viet.mp3",
-            "http://dl2.org.mp3.zdn.vn/fsdd1131lwwjA/cdae0477621bfa684463338c92b1a8c4/54772050/2011/01/14/0/a/0a169a83ae67390020b9540229feb553.mp3?filename=Ban%20Tinh%20Ca%20Dau%20Tien%20-%20Duy%20Khoa.mp3"
+            "http://dl2.org.mp3.zdn.vn/fsdd1131lwwjA/14be05c04ae42cfb2a0569d51b3507f6/54813bd0/2011/01/14/0/a/0a169a83ae67390020b9540229feb553.mp3?filename=Ban%20Tinh%20Ca%20Dau%20Tien%20-%20Duy%20Khoa.mp3"
     };
     public static String getSenderId() {
         return GOOGLE_PROJECT_ID;

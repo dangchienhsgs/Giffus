@@ -12,6 +12,7 @@
         <item>Sign out</item>
     </string-array>
 
+    <string name="text_forget_password"><u>Forget your password ?</u></string>
     <string name="OK">OK</string>
     <string name="settings_bg_color_confirm">Setting Color default</string>
     <string name="settings_default_color_confirm">Setting default color confirm</string>

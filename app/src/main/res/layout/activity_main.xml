@@ -57,5 +57,17 @@
         android:layout_alignTop="@+id/button_register"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/light_gray"
+        android:text="@string/text_forget_password"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/button_signIn"
+        android:layout_alignLeft="@+id/button_signIn"
+        android:layout_alignStart="@+id/button_signIn" />
 
+\
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 
 
+import com.dangchienhsgs.giffus.HomeActivity;
 import com.dangchienhsgs.giffus.R;
 import com.dangchienhsgs.giffus.friend.HumanCursorListAdapter;
 import com.dangchienhsgs.giffus.utils.PreferencesHandler;
@@ -248,6 +250,9 @@ public class ChooseFriendActivity extends ActionBarActivity implements SearchVie
         @Override
         protected void onPostExecute(Void aVoid) {
             ChooseFriendActivity.this.finish();
+
+            Intent intent=new Intent(ChooseFriendActivity.this, HomeActivity.class);
+            startActivity(intent);
         }
 
         @Override

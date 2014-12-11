@@ -159,6 +159,7 @@ public class CreateInnerActivity extends ActionBarActivity
         return true;
     }
 
+
     @Override
     public void onBackPressed() {
 
@@ -235,7 +236,9 @@ public class CreateInnerActivity extends ActionBarActivity
         // Save inner to postcard
         String jsonPostcard = PreferencesHandler.getValueFromPreferences(Common.JSON_POSTCARD_STRING, this);
         Postcard postcard = gson.fromJson(jsonPostcard, Postcard.class);
-        postcard.setInner(obtainInner());
+        inner=obtainInner();
+        inner.setListSongs(listSongs);
+        postcard.setInner(inner);
 
 
         // Save postcard to preferences
@@ -244,6 +247,8 @@ public class CreateInnerActivity extends ActionBarActivity
                 gson.toJson(postcard, Postcard.class),
                 this
         );
+
+        Log.d(TAG, gson.toJson(postcard, Postcard.class));
 
 
         Intent intent = new Intent(getApplicationContext(), TimePickerActivity.class);

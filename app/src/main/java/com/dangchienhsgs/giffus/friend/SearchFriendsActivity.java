@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.dangchienhsgs.giffus.HomeActivity;
 import com.dangchienhsgs.giffus.R;
 
 
@@ -27,6 +28,14 @@ public class SearchFriendsActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Intent intent=new Intent(getApplicationContext(), HomeActivity.class);
+        startActivity(intent);
+
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -41,10 +50,14 @@ public class SearchFriendsActivity extends ActionBarActivity {
     public void onClickSyncContacts(View view) {
         Intent intent = new Intent(getApplicationContext(), SyncFriendsActivity.class);
         startActivity(intent);
+
+        finish();
     }
 
     public void onClickSearchContactsByName(View view) {
         Intent intent = new Intent(getApplicationContext(), SearchByNameActivity.class);
         startActivity(intent);
+
+        finish();
     }
 }

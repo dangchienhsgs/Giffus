@@ -30,6 +30,7 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
     private ImageView mAvatar;
 
     private Postcard postcard;
+    private String jsonPostcard;
     private String flag;
 
     private boolean isDownloaded[];
@@ -46,7 +47,7 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
 
         Intent intent = getIntent();
 
-        String jsonPostcard = intent.getStringExtra(Common.JSON_POSTCARD_STRING);
+        jsonPostcard = intent.getStringExtra(Common.JSON_POSTCARD_STRING);
         postcard = new Gson().fromJson(jsonPostcard, Postcard.class);
         flag = intent.getStringExtra(Common.FLAG);
 
@@ -90,6 +91,15 @@ public class PreviewInnerActivity extends ActionBarActivity implements MusicPlay
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent=new Intent(this, PreviewCoverActivity.class);
+        intent.putExtra(Common.JSON_POSTCARD_STRING, jsonPostcard);
+        intent.putExtra(Common.FLAG, Common.FLAG_PREVIEW_POSTCARD);
+
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -3,7 +3,7 @@
     android:id="@+id/layout_postcard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/danbo1"
+    android:background="@drawable/background4"
     tools:context="com.dangchienhsgs.giffus.postcard.CreateCoverActivity">
 
     <EditText

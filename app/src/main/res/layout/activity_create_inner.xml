@@ -53,8 +53,13 @@
         <EditText
             android:id="@+id/edit_text_large"
             android:layout_width="fill_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_height="fill_parent"
             android:hint="Write your message here"
+            android:gravity="center_vertical"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </RelativeLayout>
@@ -77,6 +82,7 @@
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
+        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
 

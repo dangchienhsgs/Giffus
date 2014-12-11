@@ -25,6 +25,7 @@ import com.dangchienhsgs.giffus.dialogs.picturepickers.PicturesPickerDialogs;
 import com.dangchienhsgs.giffus.utils.Common;
 import com.dangchienhsgs.giffus.server.ServerUtilities;
 import com.dangchienhsgs.giffus.utils.EmailValidator;
+import com.dangchienhsgs.giffus.utils.UrlBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -141,8 +142,9 @@ public class RegisterActivity extends ActionBarActivity implements DatePickerDia
             data.put(Common.AVATAR_ID, String.valueOf(avatar_id));
             data.put(Common.BIRTHDAY, birthday);
 
-            progressBar.setVisibility(View.VISIBLE);
-            new RegisterBackgroundTask(data, progressBar, getApplicationContext()).execute();
+            //new RegisterBackgroundTask(data, progressBar, getApplicationContext()).execute();
+
+            new CheckUsernameTask(data).execute();
         }
 
     }
@@ -183,6 +185,11 @@ public class RegisterActivity extends ActionBarActivity implements DatePickerDia
         ProgressBar progressBar;
         Context context;
 
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         RegisterBackgroundTask(Map<String, String> data, ProgressBar progressBar, Context context) {
             this.data = data;
             this.progressBar = progressBar;
@@ -198,6 +205,8 @@ public class RegisterActivity extends ActionBarActivity implements DatePickerDia
         @Override
         protected void onPostExecute(Void aVoid) {
             progressBar.setVisibility(View.INVISIBLE);
+            registerButton.setVisibility(View.VISIBLE);
+            Toast.makeText(getApplicationContext(), "Register Successful !", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
 
@@ -206,4 +215,64 @@ public class RegisterActivity extends ActionBarActivity implements DatePickerDia
         }
     }
 
+
+    private class CheckUsernameTask extends AsyncTask<Void, String, String> {
+        private Map<String, String> data;
+        private String username;
+        private String email;
+
+        private CheckUsernameTask(Map<String, String> data) {
+            username=data.get(Common.USERNAME);
+            email=data.get(Common.EMAIL);
+            this.data=data;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+            registerButton.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            HashMap<String, String> map=new HashMap<String, String>();
+            map.put(Common.USERNAME, username);
+            map.put(Common.EMAIL, email);
+            map.put(Common.ACTION, Common.ACTION_CHECK_USERNAME_AND_EMAIL);
+
+
+            String response=ServerUtilities.postToServer(ServerUtilities.SERVER_NAME, map);
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            String[] temp=s.trim().split(" ");
+
+            String usernameResult=temp[0].trim();
+            String emailResult=temp[1].trim();
+
+            if (usernameResult.equals("false") && emailResult.equals("false")){
+                // continue
+                new RegisterBackgroundTask(data, progressBar, RegisterActivity.this).execute();
+            } else {
+
+                registerButton.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+                if (usernameResult.equals("true") && emailResult.equals("true")){
+                    Toast.makeText(getApplicationContext(), "Both username and email has been existed", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (usernameResult.equals("true")){
+                        Toast.makeText(getApplicationContext(), "This username has been existed", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (emailResult.equals("true")){
+                        Toast.makeText(getApplicationContext(), "This email has been existed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+        }
+    }
 }

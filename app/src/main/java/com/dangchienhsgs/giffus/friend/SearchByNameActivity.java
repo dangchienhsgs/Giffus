@@ -2,6 +2,7 @@ package com.dangchienhsgs.giffus.friend;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -71,6 +72,8 @@ public class SearchByNameActivity extends ActionBarActivity {
             progressBar.setVisibility(View.VISIBLE);
             new SearchFriendTask().execute(name);
         }
+
+
     }
 
     public void onClickAdd(View view) {
@@ -117,6 +120,14 @@ public class SearchByNameActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.search_by_name, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent=new Intent(this, SearchFriendsActivity.class);
+        startActivity(intent);
+
+        finish();
     }
 
     @Override

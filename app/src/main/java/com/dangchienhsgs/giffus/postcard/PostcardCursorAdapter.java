@@ -75,7 +75,7 @@ public class PostcardCursorAdapter extends SimpleCursorAdapter {
         if (PostcardUtils.checkPostcardTime(postcard)) {
             status = "Open it now !";
         } else {
-            status = "Open it in " + postcard.getMinute() + ":" + postcard.getHour() + ", " + postcard.getDay() + "/" + postcard.getMonth() + "/" + postcard.getYear();
+            status = "Open it in " + postcard.getHour() + ":" + postcard.getMinute() + ", " + postcard.getDay() + "/" + postcard.getMonth() + "/" + postcard.getYear();
         }
 
         textDescription.setText(description);

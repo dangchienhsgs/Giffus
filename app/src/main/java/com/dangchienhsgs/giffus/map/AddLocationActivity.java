@@ -147,9 +147,7 @@ public class AddLocationActivity extends Activity implements AdapterView.OnItemC
     public void onLocationAdded(GiftLocation location) {
         // Do something
 
-        Log.d(TAG, "Da clicked");
-
-        Toast.makeText(getApplicationContext(), "Clicked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Location added", Toast.LENGTH_SHORT).show();
 
         // Save data to location
 

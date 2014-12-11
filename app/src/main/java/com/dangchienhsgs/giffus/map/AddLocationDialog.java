@@ -39,6 +39,7 @@ public class AddLocationDialog extends DialogFragment {
         checkBoxSecret = (CheckBox) view.findViewById(R.id.check_box_keep_secret);
         editHint = (EditText) view.findViewById(R.id.edit_location_hint);
         editAlternativeTitle = (EditText) view.findViewById(R.id.edit_alternative_title);
+        editAlternativeTitle.setText(location.getMapTitle());
 
         editHint.setVisibility(View.INVISIBLE);
 
@@ -76,8 +77,8 @@ public class AddLocationDialog extends DialogFragment {
                         if (location == null) {
                             Toast.makeText(getActivity(), "You didn't choose any location", Toast.LENGTH_SHORT).show();
                         } else {
-
                             location.setAlternativeTitle(editAlternativeTitle.getText().toString());
+                            location.setMapTitle(editAlternativeTitle.getText().toString());
                             if (checkBoxSecret.isChecked()) {
                                 location.setSecret(true);
                                 if (!editHint.getText().toString().isEmpty()) {
