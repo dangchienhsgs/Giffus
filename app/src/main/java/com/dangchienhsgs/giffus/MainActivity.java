@@ -112,6 +112,17 @@ public class MainActivity extends ActionBarActivity {
         finish();
     }
 
+    public void onClickForgetPassword(View view){
+        Intent intent=new Intent(getApplicationContext(), RestorePasswordActivity.class);
+        startActivity(intent);
+    }
+
+
+
+
+
+
+
     /* Task check Username and Password when user log in
      * If it match, continue to create a URLContent Download Task to download the resposne
      */

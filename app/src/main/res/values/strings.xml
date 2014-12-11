@@ -252,5 +252,6 @@
     <string name="title_activity_pick_friend">Choose Friend</string>
     <string name="title_activity_account">Account</string>
     <string name="title_activity_friend_info">Friend Info</string>
+    <string name="title_activity_restore_password">RestorePasswordActivity</string>
 
 </resources>

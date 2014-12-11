@@ -42,6 +42,7 @@ public class Common {
     public static final String ACTION_SIGN_UP = "sign_up";
     public static final String ACTION_REMOVE_FRIENDSHIP = "remove_friendship";
     public static final String ACTION_CHECK_USERNAME_AND_EMAIL="check_username_and_email";
+    public static final String ACTION_RESTORE_PASSWORD="restore_password";
 
 
     public static final String NAME_SEARCH = "name";
